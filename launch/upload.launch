@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!-- load the human arm model into robot_description,
+     start a joint_state_publisher, a robot_state_publisher, and a tactile_marker publisher -->
+<launch>
+	<arg name="gui" default="true" />
+	<arg name="jsp" default="true" />
+
+	<!-- use synergy with kinematics-based <mimic> tag -->
+	<arg name="use_synergy" default="true"/>
+	<arg name="prefix" default=""/>
+	<arg name="scale" default="1.0"/>
+	<arg name="side" default="right"/>
+
+	<!-- load robot description -->
+	<arg name="__noetic" value="$(eval env('ROS_PYTHON_VERSION') == '3')" />
+	<param name="robot_description" if="$(arg __noetic)" command="xacro $(find human_arm_description)/robots/human_arm.urdf.xacro use_synergy:=$(arg use_synergy) prefix:=$(arg prefix) scale:=$(arg scale) side:=$(arg side)" />
+	<param name="robot_description" unless="$(arg __noetic)" command="xacro --xacro-ns $(find human_arm_description)/robots/human_arm.urdf.xacro use_synergy:=$(arg use_synergy) prefix:=$(arg prefix) scale:=$(arg scale) side:=$(arg side)" />
+
+	<group if="$(arg jsp)">
+		<arg name="__jsp" value="joint_state_publisher" unless="$(arg gui)"/>
+		<arg name="__jsp" value="joint_state_publisher_gui" if="$(arg gui)"/>
+		<node name="$(anon arm_jsp_gui)" pkg="$(arg __jsp)" type="$(arg __jsp)">
+			<rosparam if="$(arg use_synergy)" param="source_list">["synergy/joint_states"]</rosparam>
+			<rosparam param="source_list" unless="$(arg use_synergy)">["input/joint_states"]</rosparam>
+		</node>
+	</group>
+
+	<node name="$(anon arm_rsp)" pkg="robot_state_publisher"
+	      type="robot_state_publisher"/>
+</launch>

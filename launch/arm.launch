@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!-- upload a single human arm and start rviz -->
+<launch>
+	<arg name="scale" default="1.0"/>
+	<arg name="side" default="right"/>
+	<arg name="use_synergy" default="true"/>
+
+	<group ns="arm" >
+		<include file="$(find human_arm_description)/launch/upload.launch">
+			<arg name="scale" value="$(arg scale)"/>
+			<arg name="use_synergy" value="$(arg use_synergy)"/>
+			<arg name="side" value="$(arg side)"/>
+		</include>
+		<node name="$(anon forearm_base_transform)" pkg="tf2_ros"
+	      		type="static_transform_publisher" args="0 0 0  0 0 0  world forearm_base"/>
+	</group>
+
+	<node name="rviz_arm" pkg="rviz" type="rviz" respawn="false"
+		args="-d $(find human_arm_description)/launch/arm.rviz" output="screen"/>
+</launch>
