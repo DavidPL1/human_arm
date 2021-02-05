@@ -1,46 +1,42 @@
 joints:
   default: &JOINT_DEFAULT
-    effort:   100
+    effort: 100
     velocity: 100
-    damping:  0.0
+    damping: 0.0
     friction: 0.0
 
   elbow:
     <<: *JOINT_DEFAULT
     bounds: [-22, 90]
-  
+
   distal_radioulnar:
     <<: *JOINT_DEFAULT
     bounds: [-10, 180]
 
-  radiocarpal_abductor: 
+  radiocarpal_abductor:
     <<: *JOINT_DEFAULT
     bounds: [-5, 30]
 
-  radiocarpal_flexor: 
+  radiocarpal_flexor:
     <<: *JOINT_DEFAULT
     bounds: [-70, 60]
 
   finger: &FINGER_DEFAULT
     abduction:
       <<: *JOINT_DEFAULT
-      bounds: [-30, 30]
+      bounds: [-20, 20]
     proximal:
       <<: *JOINT_DEFAULT
       bounds: [0, 90]
     middle:
       <<: *JOINT_DEFAULT
-      bounds: [0, 90]
+      bounds: [0, 125]
     distal:
       <<: *JOINT_DEFAULT
       bounds: [0, 90]
 
-  index:  *FINGER_DEFAULT
-  middle: *FINGER_DEFAULT
-  ring:   *FINGER_DEFAULT
-  little: *FINGER_DEFAULT
   thumb:
-    <<:   *FINGER_DEFAULT
+    <<: *FINGER_DEFAULT
     abduction:
       <<: *JOINT_DEFAULT
       bounds: [-31, 61.2]
@@ -53,6 +49,10 @@ joints:
     distal:
       <<: *JOINT_DEFAULT
       bounds: [-12, 88]
+  index: *FINGER_DEFAULT
+  middle: *FINGER_DEFAULT
+  ring: *FINGER_DEFAULT
+  little: *FINGER_DEFAULT
 
   synergy:
     <<: *JOINT_DEFAULT
