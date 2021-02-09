@@ -1,0 +1,14 @@
+rec_steps:
+  A:
+    wait_seconds: 2
+    gesture_name: neutral
+    start_gesture_name: pronation
+    repeats: 0
+    period_seconds: 4
+    familiarization_repeats: 1
+
+  B:
+    gesture_name: palmar_flexion
+    repeats: 15
+    period_seconds: 4
+    familiarization_repeats: 3

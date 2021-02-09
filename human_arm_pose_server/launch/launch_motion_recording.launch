@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!-- upload predefined gestures and start the server -->
+<launch>
+  <arg name="sample_frequency" default="20" />
+  <arg name="target_prefix" default="goal" />
+  <arg name="start_prefix" default="start" />
+  <arg name="shadow_preview" default="True" />
+  <arg name="rec_config_file" default="example_rec_config" />
+  <arg name="scale" default="1.0" />
+  <arg name="side" default="right" />
+  <arg name="use_synergy" default="false" />
+  <arg name="context_info_frame_id" default="forearm_base" />
+  <arg name="use_bracelet" default="true" />
+  <arg name="bracelet_device" default="/dev/ttyACM0" />
+  <arg name="bracelet_baudrate" default="115200" />
+
+  <include file="$(find human_arm_description)/launch/arm_display.launch" >
+    <arg name="scale" value="$(arg scale)" />
+    <arg name="side" value="$(arg side)" />
+    <arg name="use_synergy" value="$(arg use_synergy)" />
+  </include>
+
+  <group ns='arm'>
+    <include file="$(find human_arm_motion_server)/launch/start_motion_server.launch" >
+      <arg name="sample_frequency" value="$(arg sample_frequency)" />
+      <arg name="target_prefix" value="$(arg target_prefix)" />
+      <arg name="start_prefix" value="$(arg start_prefix)" />
+      <arg name="shadow_preview" value="$(arg shadow_preview)" />
+    </include>
+
+    <node name="motion_director" pkg="human_arm_motion_server" type="motion_director.py" output="screen" >
+      <param name="context_info_frame_id" value="$(arg context_info_frame_id)" />
+      <rosparam command="load" file="$(find human_arm_motion_server)/config/$(arg rec_config_file).yaml" />
+    </node>
+  </group>
+
+  <group if='$(arg use_bracelet)' >
+    <include file='$(find tactile_bracelet_description)/launch/bracelet_unfolded_display.launch' />
+    <node name="bracelet_driver" pkg="tactile_bracelet_driver" type="tactile_bracelet_driver_node" args="$(arg bracelet_device) $(arg bracelet_baudrate)" output="screen" />
+  </group>
+</launch>

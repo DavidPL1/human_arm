@@ -1,0 +1,19 @@
+rec_steps:
+  A:
+    wait_seconds: 5
+    gesture_name: palmar_flexion
+    repeats: 4
+    period_seconds: 4
+    familiarization_repeats: 3
+
+  B:
+    gesture_name: palmar_extension
+    repeats: 4
+    period_seconds: 4
+    familiarization_repeats: 3
+
+  C:
+    gesture_name: palmar_flexion
+    repeats: 4
+    period_seconds: 4
+    familiarization_repeats: 3

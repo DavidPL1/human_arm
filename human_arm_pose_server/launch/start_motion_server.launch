@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!-- upload predefined gestures and start the server -->
+<launch>
+  <arg name="sample_frequency" default="20" />
+  <arg name="target_prefix" default="goal" />
+  <arg name="start_prefix" default="start" />
+  <arg name="shadow_preview" default="True" />
+
+  <!-- Load gestures into parameter server -->
+  <rosparam command="load" file="$(find human_arm_motion_server)/config/hand_arm_gestures.yaml" />
+
+  <node name="motion_server" pkg="human_arm_motion_server" type="motion_server.py" output="screen">
+    <param name="sample_frequency" value="$(arg sample_frequency)" />
+    <param name="target_prefix" value="$(arg target_prefix)" />
+    <param name="start_prefix" value="$(arg start_prefix)" />
+    <param name="shadow_preview" value="$(arg shadow_preview)" />
+  </node>
+
+</launch>
