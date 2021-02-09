@@ -11,7 +11,7 @@ Thumb joint limits inspired by: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC365
 The arm URDF model is loaded and displayed with this launch command
 
 ```
-roslaunch human_arm_description arm.launch
+roslaunch human_arm_description arm_display.launch
 ```
 
 optional arguments:
