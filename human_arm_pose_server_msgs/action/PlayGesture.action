@@ -1,0 +1,14 @@
+# Goal sends desired pose
+uint8 repeats
+float32 period_seconds
+string gesture_name
+string start_gesture_name
+---
+# Result
+uint8 return_state
+uint8 SUCCESS=0
+uint8 TARGET_GESTURE_UNKNOWN=1
+---
+# Feedback
+float32 seconds_left
+uint8 repeat_counter

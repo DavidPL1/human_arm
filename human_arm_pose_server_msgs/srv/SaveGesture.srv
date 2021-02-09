@@ -1,0 +1,10 @@
+# Goal save gesture under following name. Optionally define a joint white or balcklist
+string gesture_name
+string file_name
+string[] joint_whitelist
+string[] joint_blacklist
+---
+uint8 return_state
+uint8 SUCCESS=0
+uint8 ARGUMENT_ERROR=1
+uint8 INVALID_PATH=2
