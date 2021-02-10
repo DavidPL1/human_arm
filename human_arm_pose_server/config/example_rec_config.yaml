@@ -1,19 +1,49 @@
 rec_steps:
-  A:
-    wait_seconds: 5
-    gesture_name: palmar_flexion
-    repeats: 4
-    period_seconds: 4
-    familiarization_repeats: 3
+  - gesture:
+      description: Gesture_with_wait
+      wait_seconds: 5
+      gesture_name:
+        - palmar_flexion
+      repeats: 2
+      period_seconds: 4
+      familiarization_repeats: 3
 
-  B:
-    gesture_name: palmar_extension
-    repeats: 4
-    period_seconds: 4
-    familiarization_repeats: 3
+  - gesture:
+      description: Single_gesture
+      gesture_name:
+        - pronation
+      repeats: 2
+      period_seconds: 4
+      familiarization_repeats: 3
 
-  C:
-    gesture_name: palmar_flexion
-    repeats: 4
-    period_seconds: 4
-    familiarization_repeats: 3
+  - gesture:
+      description: Cobined_gestures
+      gesture_name:
+        - pronation
+        - fist
+      repeats: 2
+      period_seconds: 4
+      familiarization_repeats: 3
+
+  - gesture:
+      description: Cobined_start_gestures
+      start_gesture_name:
+        - pronation
+        - fist
+      gesture_name:
+        - palmar_flexion
+      repeats: 2
+      period_seconds: 4
+      familiarization_repeats: 3
+
+  - gesture:
+      description: Weighted_cobined_gestures
+      gesture_name:
+        - pronation
+        - fist
+      gesture_weight:
+        - 1.0
+        - 0.5
+      repeats: 2
+      period_seconds: 4
+      familiarization_repeats: 3
