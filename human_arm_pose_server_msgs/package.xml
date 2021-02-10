@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="3">
   <name>human_arm_motion_msgs</name>
-  <version>0.0.1</version>
+  <version>0.0.2</version>
   <description>Messages for the human arm pose server</description>
 
   <maintainer email="dleins@techfak.de">David Leins</maintainer>

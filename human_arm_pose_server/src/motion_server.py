@@ -98,23 +98,38 @@ class MotionServer():
         _result = PlayGestureResult()
         _feedback = PlayGestureFeedback(seconds_left=-1, repeat_counter=0)
 
-        if goal.gesture_name not in self.gestures:
-            _result.return_state = _result.TARGET_GESTURE_UNKNOWN
-            self.motion_as.set_succeeded(_result)
-            return
+        for gesture_name in goal.gesture_name:
+            rospy.logdebug('Checking if gesture {0} exists'.format(gesture_name))
+            if gesture_name not in self.gestures:
+                _result.return_state = _result.TARGET_GESTURE_UNKNOWN
+                self.motion_as.set_succeeded(_result)
+                return
 
         current_pose_msg = rospy.wait_for_message('joint_states', JointState)
         start_pose_dict = {name:pos for name,pos in zip(current_pose_msg.name, current_pose_msg.position)}
 
         # If not provided, use current pose as start
-        if goal.start_gesture_name in self.gestures:
-            rospy.logdebug('starting with gesture "%s"' % goal.start_gesture_name)
-            start_gst = self.gestures.get(goal.start_gesture_name)
-            debug_joint_name = start_gst.get('joint')[0]
+        if len(goal.start_gesture_name) > 0:
+            if len(goal.start_gesture_name) > 1:
+                weights = goal.start_gesture_weight
+                rospy.logdebug('starting with linear combination of gestures {0}, (weights: {1})'.format(goal.start_gesture_name, weights))
+            else:
+                weights = [1]
+                rospy.logdebug('starting with gesture {0}'.format(goal.start_gesture_name))
 
-            start_gst_dict = {name:pos for name,pos in zip(start_gst.get('joint'), start_gst.get('position'))}
+            tmp_start_pose_dict = {}
+            for idx, gesture_name in enumerate(goal.start_gesture_name):
+                rospy.logdebug('Checking if gesture {0} exists'.format(gesture_name))
+                if gesture_name in self.gestures:
+                    start_gst = self.gestures.get(gesture_name)
+
+                    start_gst_dict = {name:pos for name,pos in zip(start_gst.get('joint'), start_gst.get('position'))}
+                    # Build linear combination of gestures with a weighted sum
+                    start_keys = list(set(start_gst_dict.keys() + tmp_start_pose_dict.keys()))
+                    tmp_start_pose_dict = {name:tmp_start_pose_dict.get(name, 0.0) + start_gst_dict.get(name, 0.0) * weights[idx] for name in start_keys}
+
             # Override only the joints defined by the start gesture
-            start_pose_dict = {name:start_gst_dict.get(name, start_pose_dict[name]) for name in start_pose_dict}
+            start_pose_dict = {name:tmp_start_pose_dict.get(name, start_pose_dict[name]) for name in start_pose_dict}
 
         stamp = rospy.Time.from_sec(t) if self.sim_time else rospy.Time.now()
         self.clock_msg.clock = stamp
@@ -127,9 +142,26 @@ class MotionServer():
         self.pub_start.publish(msg_syn)
         self.pub_model.publish(msg_syn)
 
-        target_gst = self.gestures.get(goal.gesture_name)
-        target_gst_dict = {name:pos for name,pos in zip(target_gst.get('joint'), target_gst.get('position'))}
-        target_pose_dict = {name:target_gst_dict.get(name, start_pose_dict[name]) for name in start_pose_dict}
+        if len(goal.gesture_name) > 1:
+            weights = goal.gesture_weight
+            if len(weights) != len(goal.gesture_name): weights = np.repeat(1.0, len(goal.gesture_name))
+            rospy.logdebug('target is a linear combination of gestures {0}, (weights: {1})'.format(goal.gesture_name, weights))
+        else:
+            weights = [1.0]
+            rospy.logdebug('target gesture is {0}'.format(goal.gesture_name))
+
+        target_pose_dict = {}
+        for idx, gesture_name in enumerate(goal.gesture_name):
+            target_gst = self.gestures.get(gesture_name)
+
+            target_gst_dict = {name:pos for name,pos in zip(target_gst.get('joint'), target_gst.get('position'))}
+            rospy.logdebug('Target gesture "{0}" dict:\n{1}'.format(gesture_name, target_gst_dict))
+            # Override only the joints defined by the start gesture
+            target_keys = list(set(target_gst_dict.keys() + target_pose_dict.keys()))
+            target_pose_dict = {name:target_pose_dict.get(name, 0.0) + target_gst_dict.get(name, 0.0) * weights[idx] for name in target_keys}
+
+        rospy.logdebug('combined target gesture dict:\n{0}'.format(target_gst_dict))
+        target_pose_dict = {name:target_pose_dict.get(name, start_pose_dict[name]) for name in start_pose_dict}
 
         msg_syn.name = list(target_pose_dict.keys())
         msg_syn.position = list(target_pose_dict.values())

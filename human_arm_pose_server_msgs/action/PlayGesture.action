@@ -1,8 +1,10 @@
-# Goal sends desired pose
+# Goal sends desired pose or linear combination of poses
 uint8 repeats
 float32 period_seconds
-string gesture_name
-string start_gesture_name
+string[] gesture_name
+float32[] gesture_weight
+string[] start_gesture_name
+float32[] start_gesture_weight
 ---
 # Result
 uint8 return_state

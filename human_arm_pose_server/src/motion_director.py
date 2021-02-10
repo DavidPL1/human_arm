@@ -3,6 +3,8 @@
 import rospy
 from time import sleep
 
+import numpy as np
+
 from actionlib import SimpleActionClient
 from human_arm_motion_msgs.msg import PlayGestureAction, PlayGestureGoal
 from visualization_msgs.msg import Marker
@@ -76,17 +78,17 @@ class MotionDirector():
 
         rospy.loginfo("Parsing and executing steps")
 
-        rospy.logerr('rec_steps: /n%s' % self.rec_steps)
+        rospy.debug('rec_steps: /n%s' % self.rec_steps)
 
-        for step_name in self.rec_steps:
-            rospy.loginfo('Processing step %s' % step_name)
-            step = self.rec_steps.get(step_name)
+        for step_element in self.rec_steps:
+            step = step_element.get('gesture')
+            rospy.loginfo('Processing step %s' % step.get('description'))
 
             fam_reps = int(step['familiarization_repeats'])
             repeats = int(step['repeats']) + fam_reps
             rep_period = float(step['period_seconds'])
 
-            rospy.logerr("fam_reps: %s, reps: %s, rep_period: %s, gesture: %s" % (fam_reps, repeats, rep_period, step['gesture_name']))
+            rospy.logdebug("fam_reps: %s, reps: %s, rep_period: %s, gesture: %s" % (fam_reps, repeats, rep_period, step['gesture_name']))
 
             self.current_timer = repeats * rep_period - fam_reps * rep_period
 
@@ -99,14 +101,17 @@ class MotionDirector():
 
             self.pub_marker_text('Familiarization Phase')
 
+            start_gesture_len = len(step.get('start_gesture_name', []))
+            gestures_len = len(step['gesture_name'])
+
             motion_goal = PlayGestureGoal(
                 repeats=repeats,
                 period_seconds=rep_period,
-                gesture_name=step['gesture_name']
+                gesture_name=step['gesture_name'],
+                gesture_weight=step.get('gesture_weight', np.repeat(1.0, gestures_len)),
+                start_gesture_name=step.get('start_gesture_name', []),
+                start_gesture_weight=step.get('start_gesture_weight', np.repeat(1.0, start_gesture_len))
             )
-
-            if 'start_gesture_name' in step.keys():
-                motion_goal.start_gesture_name = step.get('start_gesture_name')
 
             self.motion_server.send_goal(
                 motion_goal,
@@ -115,9 +120,9 @@ class MotionDirector():
             )
 
             if self.motion_server.wait_for_result(rospy.Duration.from_sec(repeats * rep_period + 15)):
-                rospy.loginfo('Done with %s' % step_name)
+                rospy.loginfo('Done with %s' % step.get('description'))
             else:
-                rospy.logerr('Timed out on %s' % step_name)
+                rospy.logerr('Timed out on %s' % step.get('description'))
 
         self.pub_marker_text('Motion director waiting to start')
 
