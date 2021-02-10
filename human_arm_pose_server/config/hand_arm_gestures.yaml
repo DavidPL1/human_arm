@@ -1,4 +1,16 @@
 gestures:
+  fist:
+    joint: [thumb_abduction_joint, thumb_proximal_joint, thumb_middle_joint, thumb_distal_joint,
+      index_abduction_joint, index_proximal_joint, index_middle_joint, index_distal_joint,
+      middle_abduction_joint, middle_proximal_joint, middle_middle_joint, middle_distal_joint,
+      ring_abduction_joint, ring_proximal_joint, ring_middle_joint, ring_distal_joint,
+      little_abduction_joint, little_proximal_joint, little_middle_joint, little_distal_joint]
+    position: [0.6800040130544744, 0.1560562414195817, 0.7717071026156601,
+      0.7005751617532786, 0.004049163864628447, 1.332349444383278, 2.18166156499, 1.155163618721366,
+      0.0013264502315162296, 1.23464591285694, 2.18166156499, 1.497440138328907, -0.004049163864628447,
+      1.301875995643552, 2.18166156499, 1.2591503355548639, 0.0013264502315162296, 1.381358289779126,
+      1.748819910495984, 1.57079632679]
+
   neutral:
     joint: [distal_radioulnar_joint, index_abduction_joint, index_distal_joint, index_middle_joint, index_proximal_joint, little_abduction_joint, little_distal_joint, little_middle_joint, little_proximal_joint, middle_abduction_joint, middle_distal_joint, middle_middle_joint, middle_proximal_joint, radiocarpal_abductor_joint, radiocarpal_flexor_joint, ring_abduction_joint, ring_distal_joint, ring_middle_joint, ring_proximal_joint, thumb_abduction_joint, thumb_distal_joint, thumb_middle_joint, thumb_proximal_joint]
     position: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,]
