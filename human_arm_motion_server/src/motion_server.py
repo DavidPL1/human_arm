@@ -50,7 +50,7 @@ class MotionServer():
     def handle_gesture_save(self, req):
         mode = 0  # all
 
-        if len(req.joint_whitelist) > 0:
+        if len(req.joint_whitelist) > 0 and req.joint_whitelist[0] != '':
             mode = 1  # whitelist
         if len(req.joint_blacklist) > 0 and req.joint_blacklist[0] != '':
             if mode == 1:
