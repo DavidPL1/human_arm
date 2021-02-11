@@ -1,0 +1,12 @@
+rec_steps:
+  - gesture:
+      description: Pronated Fist Palmar Flexion
+      wait_seconds: 3
+      gesture_name:
+        - palmar_flexion
+      start_gesture_name:
+        - fist
+        - pronation
+      repeats: 2
+      period_seconds: 4
+      familiarization_repeats: 1
