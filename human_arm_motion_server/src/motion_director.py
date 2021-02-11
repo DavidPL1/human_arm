@@ -78,7 +78,7 @@ class MotionDirector():
 
         rospy.loginfo("Parsing and executing steps")
 
-        rospy.debug('rec_steps: /n%s' % self.rec_steps)
+        rospy.logdebug('rec_steps: /n%s' % self.rec_steps)
 
         for step_element in self.rec_steps:
             step = step_element.get('gesture')
