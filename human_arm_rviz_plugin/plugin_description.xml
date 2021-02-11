@@ -1,0 +1,8 @@
+<library path="lib/libhuman_arm_rviz_plugin">
+  <class name="human_arm_rviz_plugin/MotionDirectorControl"
+  type="human_arm_rviz_plugin::MotionDirectorPanel"
+  base_class_type="rviz::Panel">
+    <description>A panel widget to control the human arm motion
+    director.</description>
+  </class>
+</library>
