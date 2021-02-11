@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 
 import rospy
+import rospkg
+import yaml
+
+import os
+
 from time import sleep
 
 import numpy as np
@@ -8,13 +13,13 @@ import numpy as np
 from actionlib import SimpleActionClient
 from human_arm_motion_msgs.msg import PlayGestureAction, PlayGestureGoal
 from visualization_msgs.msg import Marker
-from std_msgs.msg import UInt8, Empty
+from std_msgs.msg import UInt8, Empty, String
 
 class MotionDirector():
     def __init__(self):
         rospy.init_node('human_arm_motion_director')
         self.text_frame_id = rospy.get_param('~context_info_frame_id', 'forearm_base')
-        self.rec_steps = rospy.get_param('~rec_steps')
+        self.rec_steps = rospy.get_param('~rec_steps', None)
         self.pub_marker = rospy.Publisher('visualization_marker', Marker, queue_size=1)
         self.pub_rec_flag = rospy.Publisher('rec_flag', UInt8, queue_size=1)
         self.current_timer = None
@@ -30,7 +35,7 @@ class MotionDirector():
 
         rospy.loginfo("Setup done, starting to play rec motion config")
 
-        rospy.Subscriber('play_config', Empty, self.parse_config)
+        rospy.Subscriber('play_config', String, self.play_config)
         self.pub_marker_text('Motion director waiting to start')
 
 
@@ -74,7 +79,33 @@ class MotionDirector():
         self.end_recording()
 
 
-    def parse_config(self, empty):
+    def play_config(self, req):
+        """Either loads a new config and plays it or just plays an already loaded config."""
+
+        if req.data:
+            rospy.loginfo("Got config: %s" % req.data)
+            rospack = rospkg.RosPack()
+
+            pkgpath = rospack.get_path('human_arm_motion_server')
+            if req.data + '.yaml' not in os.listdir(os.path.join(pkgpath, 'config', 'recfiles')):
+                rospy.logerr("Rec config file '%s.yaml' not found in config path (%s)" % (req.data, os.path.join(pkgpath, 'config', 'recfiles')))
+                return
+
+            # Override current config, if it exists
+            try:
+                rospy.delete_param('~rec_steps')
+            except KeyError:
+                pass
+
+            rec_file_path = os.path.join(pkgpath, 'config', 'recfiles', req.data + ".yaml")
+            with open(rec_file_path, 'r') as f:
+                self.rec_steps = yaml.load(f).get('rec_steps')
+            rospy.set_param('~rec_steps', self.rec_steps)
+        else:
+            self.rec_steps = rospy.get_param('~rec_steps', None)
+            if self.rec_steps is None:
+                rospy.logerr("Rec config file not provided and no config is currently loaded. Aborting...")
+                return
 
         rospy.loginfo("Parsing and executing steps")
 

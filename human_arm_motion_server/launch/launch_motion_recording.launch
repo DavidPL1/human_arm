@@ -30,7 +30,7 @@
 
     <node name="motion_director" pkg="human_arm_motion_server" type="motion_director.py" output="screen" >
       <param name="context_info_frame_id" value="$(arg context_info_frame_id)" />
-      <rosparam command="load" file="$(find human_arm_motion_server)/config/$(arg rec_config_file).yaml" />
+      <rosparam command="load" file="$(find human_arm_motion_server)/config/recfiles/$(arg rec_config_file).yaml" />
     </node>
   </group>
 
