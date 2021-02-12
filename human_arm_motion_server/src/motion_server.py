@@ -114,7 +114,7 @@ class MotionServer():
                 weights = goal.start_gesture_weight
                 rospy.logdebug('starting with linear combination of gestures {0}, (weights: {1})'.format(goal.start_gesture_name, weights))
             else:
-                weights = [1]
+                weights = goal.start_gesture_weight if len(goal.start_gesture_weight) == 1 else [1.0]
                 rospy.logdebug('starting with gesture {0}'.format(goal.start_gesture_name))
 
             tmp_start_pose_dict = {}
@@ -147,7 +147,7 @@ class MotionServer():
             if len(weights) != len(goal.gesture_name): weights = np.repeat(1.0, len(goal.gesture_name))
             rospy.logdebug('target is a linear combination of gestures {0}, (weights: {1})'.format(goal.gesture_name, weights))
         else:
-            weights = [1.0]
+            weights = goal.gesture_weight if len(goal.gesture_weight) == 1 else [1.0]
             rospy.logdebug('target gesture is {0}'.format(goal.gesture_name))
 
         target_pose_dict = {}
