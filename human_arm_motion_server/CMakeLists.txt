@@ -35,6 +35,7 @@ catkin_install_python(
   PROGRAMS
   src/motion_server.py
   src/motion_director.py
+  src/convert_to_csv.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
