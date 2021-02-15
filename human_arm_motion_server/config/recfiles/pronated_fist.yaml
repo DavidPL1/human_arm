@@ -1,0 +1,12 @@
+rec_steps:
+  - gesture:
+      description: Pronated Fist
+      wait_seconds: 3
+      gesture_name:
+        - fist
+      start_gesture_name:
+        - neutral
+        - pronation
+      repeats: 10
+      period_seconds: 4
+      familiarization_repeats: 2
