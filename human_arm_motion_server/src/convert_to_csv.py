@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 ## Mostly copied from bagpy (https://github.com/jmscslgroup/bagpy/)
+import rospy
 
 import os
 import sys
@@ -117,25 +118,24 @@ class bagreader():
         extracted_data = extracted_data.set_index('timestamp')
 
         extracted_gt = pd.DataFrame(columns=joint_names)
-        for topic, msg, t in self.reader.read_messages(topics=gt_topic, start_time=t_start, end_time=t_stop):
+        start_ahead_t = rospy.Time.from_sec(t_start.to_sec() - 0.1)
+        for topic, msg, t in self.reader.read_messages(topics=gt_topic, start_time=start_ahead_t, end_time=t_stop):
             df_entry = {name:val for name,val in zip(msg.name, msg.position)}
             df_entry['timestamp'] = t
             extracted_gt = extracted_gt.append(pd.Series(df_entry), ignore_index=True)
         print('[INFO] Extracted GT data')
 
         extracted_gt = extracted_gt.set_index('timestamp')
+
         # Now we have to interpolate the gt data to fit the bracelet values
         # this is a bit tricky, because timestamps might not overlap.
         # Therefore we first *extend* the gt index by the tactile data index, simply filling in NaN values.
         # As we still have the original data at the original points in time, we can now interpolate linearly
         # and afterwards remove the original data at non-overlapping timestamps. (Data inserted after the last
         # original timestamp is filled with the last valid value, which should be fine).
-        # Also, as initial tactile data might be present before the first joint states message, we use backfill
-        # after linear interpolation to replace leading NaNs in gt data.
         extracted_gt = extracted_gt.reindex(extracted_gt.index.union(extracted_data.index)).interpolate('linear').reindex(extracted_data.index)
 
         extracted_data[joint_names] = extracted_gt[joint_names]
-        extracted_data = extracted_data.interpolate('backfill')
         del extracted_gt
         extracted_data.to_csv(os.path.join(self.datafolder, 'data.csv'), index=True, header=True)
 
@@ -153,7 +153,7 @@ if __name__ == '__main__':
         for bag in [f for f in os.listdir(os.path.abspath(path_arg)) if f.split('.')[-1] == 'bag']:
             bagreader(os.path.join(os.path.abspath(path_arg), bag))
     elif os.path.isfile(path_arg):
-        bagreder(os.path.abspath(path_arg))
+        bagreader(os.path.abspath(path_arg))
     else:
         print('[ERROR] Invalid path or filename! ({0})'.format(os.path.abspath(path_arg)))
         sys.exit(1)
