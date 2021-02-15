@@ -4,9 +4,11 @@ rec_steps:
       wait_seconds: 3
       gesture_name:
         - palmar_flexion
+      gesture_weight:
+        - 0.85
       start_gesture_name:
         - fist
         - pronation
-      repeats: 2
+      repeats: 10
       period_seconds: 4
-      familiarization_repeats: 1
+      familiarization_repeats: 2
