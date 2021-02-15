@@ -132,9 +132,10 @@ class bagreader():
         # original timestamp is filled with the last valid value, which should be fine).
         # Also, as initial tactile data might be present before the first joint states message, we use backfill
         # after linear interpolation to replace leading NaNs in gt data.
-        extracted_gt = extracted_gt.reindex(extracted_gt.index.union(extracted_data.index)).interpolate('linear').interpolate('backfill').reindex(extracted_data.index)
+        extracted_gt = extracted_gt.reindex(extracted_gt.index.union(extracted_data.index)).interpolate('linear').reindex(extracted_data.index)
 
         extracted_data[joint_names] = extracted_gt[joint_names]
+        extracted_data = extracted_data.interpolate('backfill')
         del extracted_gt
         extracted_data.to_csv(os.path.join(self.datafolder, 'data.csv'), index=True, header=True)
 
