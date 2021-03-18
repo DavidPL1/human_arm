@@ -12,6 +12,7 @@ import numpy as np
 number_of_boards = 9
 
 joint_names = [
+    'synergy_joint',
     'elbow_joint',
     'distal_radioulnar_joint',
     'radiocarpal_abductor_joint',
