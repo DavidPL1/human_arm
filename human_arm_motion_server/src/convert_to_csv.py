@@ -106,6 +106,7 @@ class bagreader():
         print('[INFO] Generated board columns')
 
         extracted_data = pd.DataFrame(columns=joint_names+board_cols+['timestamp'])
+        extracted_gt = pd.DataFrame(columns=joint_names)
 
         for t_start, t_stop in zip(rec_start, rec_stop):
             for topic, msg, t in self.reader.read_messages(topics=tactile_topic, start_time=t_start, end_time=t_stop):
@@ -114,18 +115,14 @@ class bagreader():
                     sensor_dict = {'{0}_{1}'.format(sensor.name, j):val for j,val in enumerate(sensor.values)}
                     df_entry.update(sensor_dict)
                 extracted_data = extracted_data.append(pd.Series(df_entry), ignore_index=True)
+        
+            start_ahead_t = rospy.Time.from_sec(t_start.to_sec() - 0.1)
+            for topic, msg, t in self.reader.read_messages(topics=gt_topic, start_time=start_ahead_t, end_time=t_stop):
+                df_entry = {name:val for name,val in zip(msg.name, msg.position)}
+                df_entry['timestamp'] = t
+                extracted_gt = extracted_gt.append(pd.Series(df_entry), ignore_index=True)
 
-        print('[INFO] Extracted tactile data')
         extracted_data = extracted_data.set_index('timestamp')
-
-        extracted_gt = pd.DataFrame(columns=joint_names)
-        start_ahead_t = rospy.Time.from_sec(t_start.to_sec() - 0.1)
-        for topic, msg, t in self.reader.read_messages(topics=gt_topic, start_time=start_ahead_t, end_time=t_stop):
-            df_entry = {name:val for name,val in zip(msg.name, msg.position)}
-            df_entry['timestamp'] = t
-            extracted_gt = extracted_gt.append(pd.Series(df_entry), ignore_index=True)
-        print('[INFO] Extracted GT data')
-
         extracted_gt = extracted_gt.set_index('timestamp')
 
         # Now we have to interpolate the gt data to fit the bracelet values
