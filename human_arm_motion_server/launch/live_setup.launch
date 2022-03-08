@@ -22,22 +22,6 @@
     <arg name="use_synergy" value="$(arg use_synergy)" />
   </include>
 
-  <group ns='arm'>
-    <include file="$(find human_arm_motion_server)/launch/start_motion_server.launch" >
-      <arg name="config_subdir" value="$(arg config_subdir)" />
-      <arg name="sample_frequency" value="$(arg sample_frequency)" />
-      <arg name="target_prefix" value="$(arg target_prefix)" />
-      <arg name="start_prefix" value="$(arg start_prefix)" />
-      <arg name="shadow_preview" value="$(arg shadow_preview)" />
-    </include>
-
-    <node name="motion_director" pkg="human_arm_motion_server" type="motion_director.py" output="screen" >
-      <param name="config_subdir" value="$(arg config_subdir)" />
-      <param name="context_info_frame_id" value="$(arg context_info_frame_id)" />
-      <rosparam command="load" file="$(find human_arm_motion_server)/config/$(arg config_subdir)/recfiles/$(arg rec_config_file).yaml" />
-    </node>
-  </group>
-
   <group if='$(arg use_bracelet)' >
     <include file='$(find tactile_bracelet_description)/launch/bracelet_unfolded_display.launch' />
     <node name="bracelet_driver" pkg="tactile_bracelet_driver" type="tactile_bracelet_driver_node" args="$(arg bracelet_device) $(arg bracelet_baudrate)" output="screen" />

@@ -1,0 +1,38 @@
+rec_steps:
+  - gesture:
+      description: Pronated Palmar Flexion
+      wait_seconds: 3
+      gesture_name:
+        - palmar_flexion
+        - supination
+      gesture_weight:
+        - 1.0
+        - 0.5
+      start_gesture_name:
+        - neutral
+        - pronation
+      repeats: 5 
+      period_seconds: 4
+      familiarization_repeats: 2
+  - gesture:
+      description: Supinated Palmar Flexion
+      wait_seconds: 3
+      gesture_name:
+        - palmar_flexion
+      start_gesture_name:
+        - neutral
+        - supination
+      repeats: 5
+      period_seconds: 4
+      familiarization_repeats: 2
+  - gesture:
+      description: Supination/Pronation
+      wait_seconds: 3
+      gesture_name:
+        - pronation
+      start_gesture_name:
+        - palmar_flexion
+        - supination
+      repeats: 5
+      period_seconds: 4
+      familiarization_repeats: 2

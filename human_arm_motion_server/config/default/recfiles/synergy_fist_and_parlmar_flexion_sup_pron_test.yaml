@@ -1,0 +1,65 @@
+rec_steps:
+  - gesture:
+      description: Supinated Palmar Flexion
+      wait_seconds: 3
+      gesture_name:
+        - palmar_flexion
+      start_gesture_name:
+        - neutral
+        - pronation
+      start_gesture_weight:
+        - 1.0
+        - 0.5
+      repeats: 5
+      period_seconds: 4
+      familiarization_repeats: 2
+  - gesture:
+      description: Pronated Palmar Flexion
+      wait_seconds: 3
+      gesture_name:
+        - supination
+      start_gesture_name:
+        - synergy_fist
+        - palmar_flexion
+        - pronation
+      start_gesture_weight:
+        - 1.0
+        - 0.7
+        - 1.0
+      repeats: 5
+      period_seconds: 4
+      familiarization_repeats: 2
+  - gesture:
+      description: Pronated Synergy Fist
+      wait_seconds: 3
+      gesture_name:
+        - supination
+      start_gesture_name:
+        - palmar_flexion
+        - synergy_fist
+        - pronation
+      start_gesture_weight:
+        - 0.0
+        - 1.0
+        - 1.0
+      repeats: 5
+      period_seconds: 4
+      familiarization_repeats: 2
+  - gesture:
+      description: Supinated Synergy Fist
+      wait_seconds: 3
+      gesture_name:
+        - palmar_flexion
+      gesture_weight:
+        - 0.7
+      start_gesture_name:
+        - palmar_flexion
+        - synergy_fist
+        - pronation
+      start_gesture_weight:
+        - 0.0
+        - 1.0
+        - 0.5
+      repeats: 5
+      period_seconds: 4
+      familiarization_repeats: 2

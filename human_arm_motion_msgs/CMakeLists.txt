@@ -28,6 +28,7 @@ add_action_files(
 add_service_files(
 	FILES
 	SaveGesture.srv
+	PlayConfig.srv
 )
 
 generate_messages(

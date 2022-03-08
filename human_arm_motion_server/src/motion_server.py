@@ -13,6 +13,7 @@ import actionlib
 from sensor_msgs.msg import JointState
 from human_arm_motion_msgs.srv import SaveGesture, SaveGestureResponse
 from human_arm_motion_msgs.msg import PlayGestureAction, PlayGestureGoal, PlayGestureFeedback, PlayGestureResult
+from std_msgs.msg import UInt8
 
 from rosgraph_msgs.msg import Clock
 
@@ -28,6 +29,8 @@ class MotionServer():
         self.pub_start = None
         self.pub_target = None
         self.sim_time = rospy.get_param('use_sim_time', False)
+
+        self.pub_hold_flag = rospy.Publisher('hold_flag', UInt8, queue_size=1)
 
         self.sim_time = rospy.get_param('use_sim_time', False)
         self.clock_pub = rospy.Publisher('clock', Clock, queue_size=1)
@@ -68,14 +71,14 @@ class MotionServer():
         if mode == 1:
             curr_pose_dict = {name:pos for name,pos in zip(current_pose_msg.name, current_pose_msg.position) if name in req.joint_whitelist}
             state_dict = dict(
-                joint=curr_pose_dict.keys(),
-                position=curr_pose_dict.values()
+                joint=list(curr_pose_dict.keys()),
+                position=list(curr_pose_dict.values())
             )
         if mode == 2:
             curr_pose_dict = {name:pos for name,pos in zip(current_pose_msg.name, current_pose_msg.position) if name not in req.joint_blacklist}
             state_dict = dict(
-                joint=curr_pose_dict.keys(),
-                position=curr_pose_dict.values()
+                joint=list(curr_pose_dict.keys()),
+                position=list(curr_pose_dict.values())
             )
 
         gesture_dict = {}
@@ -95,6 +98,13 @@ class MotionServer():
         return SaveGestureResponse(SaveGestureResponse.SUCCESS)
 
     def play_gesture(self, goal):
+        if goal.hold_secs > 0.0:
+            return self.play_hold_gesture(goal)
+        else:
+            return self.play_repeat_gesture(goal)
+
+
+    def play_repeat_gesture(self, goal):
         _result = PlayGestureResult()
         _feedback = PlayGestureFeedback(seconds_left=-1, repeat_counter=0)
 
@@ -125,7 +135,7 @@ class MotionServer():
 
                     start_gst_dict = {name:pos for name,pos in zip(start_gst.get('joint'), start_gst.get('position'))}
                     # Build linear combination of gestures with a weighted sum
-                    start_keys = list(set(start_gst_dict.keys() + tmp_start_pose_dict.keys()))
+                    start_keys = list(set(list(start_gst_dict.keys()) + list(tmp_start_pose_dict.keys())))
                     tmp_start_pose_dict = {name:tmp_start_pose_dict.get(name, 0.0) + start_gst_dict.get(name, 0.0) * weights[idx] for name in start_keys}
 
             # Override only the joints defined by the start gesture
@@ -157,7 +167,7 @@ class MotionServer():
             target_gst_dict = {name:pos for name,pos in zip(target_gst.get('joint'), target_gst.get('position'))}
             rospy.logdebug('Target gesture "{0}" dict:\n{1}'.format(gesture_name, target_gst_dict))
             # Override only the joints defined by the start gesture
-            target_keys = list(set(target_gst_dict.keys() + target_pose_dict.keys()))
+            target_keys = list(set(list(target_gst_dict.keys()) + list(target_pose_dict.keys())))
             target_pose_dict = {name:target_pose_dict.get(name, 0.0) + target_gst_dict.get(name, 0.0) * weights[idx] for name in target_keys}
 
         rospy.logdebug('combined target gesture dict:\n{0}'.format(target_gst_dict))
@@ -194,9 +204,140 @@ class MotionServer():
             t += rate.sleep_dur.to_sec()
             sleep(rate.sleep_dur.to_sec())
             _feedback.seconds_left = end - t
-            _feedback.repeat_counter = t // period
+            _feedback.repeat_counter = int(t // period)
             self.motion_as.publish_feedback(_feedback)
         rospy.logdebug("Took %f seconds for %d repetitions of %d seconds" % (t, repetitions, period))
+
+        self.pub_target.publish(msg_syn)
+        self.pub_start.publish(msg_syn)
+        _result.return_state  = _result.SUCCESS
+        self.motion_as.set_succeeded(_result)
+
+    def play_hold_gesture(self, goal):
+        _result = PlayGestureResult()
+        _feedback = PlayGestureFeedback(seconds_left=-1, repeat_counter=0)
+
+        self.pub_hold_flag.publish(UInt8(0))
+
+        for gesture_name in goal.gesture_name:
+            rospy.logdebug('Checking if gesture {0} exists'.format(gesture_name))
+            if gesture_name not in self.gestures:
+                _result.return_state = _result.TARGET_GESTURE_UNKNOWN
+                self.motion_as.set_succeeded(_result)
+                return
+
+        current_pose_msg = rospy.wait_for_message('joint_states', JointState)
+        start_pose_dict = {name:pos for name,pos in zip(current_pose_msg.name, current_pose_msg.position)}
+
+        # If not provided, use current pose as start
+        if len(goal.start_gesture_name) > 0:
+            if len(goal.start_gesture_name) > 1:
+                weights = goal.start_gesture_weight
+                rospy.logdebug('starting with linear combination of gestures {0}, (weights: {1})'.format(goal.start_gesture_name, weights))
+            else:
+                weights = goal.start_gesture_weight if len(goal.start_gesture_weight) == 1 else [1.0]
+                rospy.logdebug('starting with gesture {0}'.format(goal.start_gesture_name))
+
+            tmp_start_pose_dict = {}
+            for idx, gesture_name in enumerate(goal.start_gesture_name):
+                rospy.logdebug('Checking if gesture {0} exists'.format(gesture_name))
+                if gesture_name in self.gestures:
+                    start_gst = self.gestures.get(gesture_name)
+
+                    start_gst_dict = {name:pos for name,pos in zip(start_gst.get('joint'), start_gst.get('position'))}
+                    # Build linear combination of gestures with a weighted sum
+                    start_keys = list(set(list(start_gst_dict.keys()) + list(tmp_start_pose_dict.keys())))
+                    tmp_start_pose_dict = {name:tmp_start_pose_dict.get(name, 0.0) + start_gst_dict.get(name, 0.0) * weights[idx] for name in start_keys}
+
+            # Override only the joints defined by the start gesture
+            start_pose_dict = {name:tmp_start_pose_dict.get(name, start_pose_dict[name]) for name in start_pose_dict}
+
+        stamp = rospy.Time.from_sec(t) if self.sim_time else rospy.Time.now()
+        self.clock_msg.clock = stamp
+        self.clock_pub.publish(self.clock_msg)
+
+        msg_syn = JointState()
+        msg_syn.header.stamp = stamp
+        msg_syn.name = list(start_pose_dict.keys())
+        msg_syn.position = list(start_pose_dict.values())
+        self.pub_start.publish(msg_syn)
+        self.pub_model.publish(msg_syn)
+
+        if len(goal.gesture_name) > 1:
+            weights = goal.gesture_weight
+            if len(weights) != len(goal.gesture_name): weights = np.repeat(1.0, len(goal.gesture_name))
+            rospy.logdebug('target is a linear combination of gestures {0}, (weights: {1})'.format(goal.gesture_name, weights))
+        else:
+            weights = goal.gesture_weight if len(goal.gesture_weight) == 1 else [1.0]
+            rospy.logdebug('target gesture is {0}'.format(goal.gesture_name))
+
+        target_pose_dict = {}
+        for idx, gesture_name in enumerate(goal.gesture_name):
+            target_gst = self.gestures.get(gesture_name)
+
+            target_gst_dict = {name:pos for name,pos in zip(target_gst.get('joint'), target_gst.get('position'))}
+            rospy.logdebug('Target gesture "{0}" dict:\n{1}'.format(gesture_name, target_gst_dict))
+            # Override only the joints defined by the start gesture
+            target_keys = list(set(list(target_gst_dict.keys()) + list(target_pose_dict.keys())))
+            target_pose_dict = {name:target_pose_dict.get(name, 0.0) + target_gst_dict.get(name, 0.0) * weights[idx] for name in target_keys}
+
+        rospy.logdebug('combined target gesture dict:\n{0}'.format(target_gst_dict))
+        target_pose_dict = {name:target_pose_dict.get(name, start_pose_dict[name]) for name in start_pose_dict}
+
+        msg_syn.name = list(target_pose_dict.keys())
+        msg_syn.position = list(target_pose_dict.values())
+        self.pub_target.publish(msg_syn)
+
+        rate = rospy.Rate(self.sample_frequency) # running at 10 Hz
+        t = 0 # counter for elapsed time
+        period = goal.period_seconds  # includes movement to target and back to start
+        hold_secs = goal.hold_secs
+        repetitions = goal.repeats
+        reached_target = period
+        holding_end = period + hold_secs
+        total_end = period * 2 + hold_secs
+
+        _feedback.seconds_left = total_end
+
+        # dict keys() and value() functions return the list in their own order so this is necessary to ensure
+        # the different values of the same joints are being subtracted
+        diff = [start_pose_dict[name] - target_pose_dict[name] for name in target_pose_dict.keys()]
+
+        self.motion_as.publish_feedback(_feedback)
+
+        while t < total_end:
+            stamp = rospy.Time.from_sec(t) if self.sim_time else rospy.Time.now()
+            self.clock_msg.clock = stamp
+            self.clock_pub.publish(self.clock_msg)
+
+            msg_syn.header.stamp = stamp
+
+            if t < reached_target:
+                for i, pos in enumerate(target_pose_dict.values()):
+                    msg_syn.position[i] = pos + diff[i] * (0.5 + 0.5 * np.cos(np.pi/period*t))
+                    self.pub_model.publish(msg_syn)
+                t += rate.sleep_dur.to_sec()
+                sleep(rate.sleep_dur.to_sec())
+                _feedback.seconds_left = total_end - t
+                _feedback.repeat_counter = int(t // period)
+                self.motion_as.publish_feedback(_feedback)
+            elif t < holding_end:
+                self.pub_hold_flag.publish(UInt8(1))
+                t += rate.sleep_dur.to_sec()
+                sleep(rate.sleep_dur.to_sec())
+                _feedback.seconds_left = total_end - t
+            else:
+                self.pub_hold_flag.publish(UInt8(0))
+                for i, pos in enumerate(target_pose_dict.values()):
+                    msg_syn.position[i] = pos + diff[i] * (0.5 + 0.5 * np.cos(np.pi/period*(t-hold_secs)))
+                    self.pub_model.publish(msg_syn)
+                t += rate.sleep_dur.to_sec()
+                sleep(rate.sleep_dur.to_sec())
+                _feedback.seconds_left = total_end - t
+                _feedback.repeat_counter = int(t // period)
+                self.motion_as.publish_feedback(_feedback)
+
+        rospy.logdebug("Took %f seconds" % (t))
 
         self.pub_target.publish(msg_syn)
         self.pub_start.publish(msg_syn)

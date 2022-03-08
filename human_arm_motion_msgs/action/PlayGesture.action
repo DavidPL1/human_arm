@@ -1,5 +1,6 @@
 # Goal sends desired pose or linear combination of poses
 uint8 repeats
+float32 hold_secs
 float32 period_seconds
 string[] gesture_name
 float32[] gesture_weight

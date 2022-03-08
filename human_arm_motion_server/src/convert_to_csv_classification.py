@@ -12,7 +12,6 @@ import numpy as np
 number_of_boards = 9
 
 joint_names = [
-    'synergy_joint',
     'elbow_joint',
     'distal_radioulnar_joint',
     'radiocarpal_abductor_joint',
@@ -97,6 +96,8 @@ class bagreader():
                     rec_start.append(t)
                 elif msg.data == 0:
                     rec_stop.append(t)
+        if len(rec_stop) == 0:
+            rec_stop.append(None)
 
         print('[INFO] rec_starts: {0}, rec_stops: {1}'.format(rec_start, rec_stop))
 
@@ -106,7 +107,6 @@ class bagreader():
         print('[INFO] Generated board columns')
 
         extracted_data = pd.DataFrame(columns=joint_names+board_cols+['timestamp'])
-        extracted_gt = pd.DataFrame(columns=joint_names)
 
         for t_start, t_stop in zip(rec_start, rec_stop):
             for topic, msg, t in self.reader.read_messages(topics=tactile_topic, start_time=t_start, end_time=t_stop):
@@ -115,27 +115,22 @@ class bagreader():
                     sensor_dict = {'{0}_{1}'.format(sensor.name, j):val for j,val in enumerate(sensor.values)}
                     df_entry.update(sensor_dict)
                 extracted_data = extracted_data.append(pd.Series(df_entry), ignore_index=True)
-        
-            start_ahead_t = rospy.Time.from_sec(t_start.to_sec() - 0.1)
-            for topic, msg, t in self.reader.read_messages(topics=gt_topic, start_time=start_ahead_t, end_time=t_stop):
-                df_entry = {name:val for name,val in zip(msg.name, msg.position)}
-                df_entry['timestamp'] = t
-                extracted_gt = extracted_gt.append(pd.Series(df_entry), ignore_index=True)
 
-        print('Len of extracted gt: {0}'.format(len(extracted_gt)))
         extracted_data = extracted_data.set_index('timestamp')
-        extracted_gt = extracted_gt.set_index('timestamp')
+        print('[INFO] Extracted tactile data (shape: {}'.format(extracted_data.shape) + ')')
 
-        # sanity check if extracted_gt contains duplicate timestamp entries (with the same content)
-        if extracted_gt.index.duplicated().any():
-            d_idxs = np.where(extracted_gt.index.duplicated())
-            for d_idx in d_idxs:
-                d_idx = extracted_gt.index[d_idx]
-                duplicates = extracted_gt.loc[d_idx].dropna(1).to_numpy() # drop nan cols, as NaN == NaN is always false!
-                assert (duplicates[0] == duplicates).all(), 'Duplicate timestamps have different content! (see extracted_gt at index {0})'.format(d_idx)
-            print('Found {0} duplicate timestamps in gt, but data seems to be valid. Removing duplicates...'.format(len(d_idxs)))
-            extracted_gt = extracted_gt[~extracted_gt.index.duplicated()]
-            del d_idx, duplicates
+        extracted_gt = pd.DataFrame(columns=joint_names)
+        start_ahead_t = rospy.Time.from_sec(t_start.to_sec() - 0.1)
+        start_ahead_t = rospy.Time.from_sec(t_start.to_sec())
+        for topic, msg, t in self.reader.read_messages(topics=gt_topic, start_time=start_ahead_t, end_time=t_stop):
+            df_entry = {name:val for name,val in zip(msg.name, msg.position)}
+            df_entry['timestamp'] = t
+            extracted_gt = extracted_gt.append(pd.Series(df_entry), ignore_index=True)
+        print('[INFO] Extracted GT data (shape: {}'.format(extracted_gt.shape) + ')')
+
+        print('GT columns: ', extracted_gt.columns)
+
+        extracted_gt = extracted_gt.set_index('timestamp')
 
         # Now we have to interpolate the gt data to fit the bracelet values
         # this is a bit tricky, because timestamps might not overlap.

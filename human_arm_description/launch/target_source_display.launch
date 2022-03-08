@@ -4,47 +4,35 @@
   <arg name="scale" default="1.0" />
   <arg name="side" default="right" />
   <arg name="use_synergy" default="false" />
-  <arg name="use_shadow_arms" default="true" />
   <arg name="config_subdir" default="default" />
   <group ns="arm">
-    <include file="$(find human_arm_description)/launch/upload.launch">
-
-      <arg name="scale" value="$(arg scale)" />
-      <arg name="use_synergy" value="$(arg use_synergy)" />
-      <arg name="side" value="$(arg side)" />
-    </include>
-    <node name="$(anon forearm_base_transform)" pkg="tf2_ros"
-    type="static_transform_publisher"
-    args="0 0 0 0 0 0 world forearm_base" />
-    <!-- "Shadow" states for goal and start like in motion planning -->
-    <group ns="goal" if="$(arg use_shadow_arms)">
+    <group ns="source">
       <include file="$(find human_arm_description)/launch/upload.launch">
-
         <arg name="scale" value="$(arg scale)" />
         <arg name="use_synergy" value="$(arg use_synergy)" />
         <arg name="side" value="$(arg side)" />
-        <arg name="prefix" value="goal_" />
+        <arg name="prefix" value="source_" />
         <arg name="gui" value="false" />
       </include>
-      <node name="$(anon goal_forearm_base_transform)"
+      <node name="$(anon source_forearm_base_transform)"
       pkg="tf2_ros" type="static_transform_publisher"
-      args="0 0 0 0 0 0 world goal_forearm_base" />
+      args="0 0 0 0 0 0 world source_forearm_base" />
     </group>
-    <group ns="start" if="$(arg use_shadow_arms)">
+    <group ns="target">
       <include file="$(find human_arm_description)/launch/upload.launch">
 
         <arg name="scale" value="$(arg scale)" />
         <arg name="use_synergy" value="$(arg use_synergy)" />
         <arg name="side" value="$(arg side)" />
-        <arg name="prefix" value="start_" />
+        <arg name="prefix" value="target_" />
         <arg name="gui" value="false" />
       </include>
-      <node name="$(anon goal_forearm_base_transform)"
+      <node name="$(anon target_forearm_base_transform)"
       pkg="tf2_ros" type="static_transform_publisher"
-      args="0 0 0 0 0 0 world start_forearm_base" />
+      args="0 0 0 0 0 0 world target_forearm_base" />
     </group>
   </group>
-  <node name="rviz_arm" pkg="rviz" type="rviz" respawn="false" args="-d $(find human_arm_description)/launch/arm.rviz" output="screen" >
+  <node name="rviz_arm" pkg="rviz" type="rviz" respawn="false" args="-d $(find human_arm_description)/launch/source_target.rviz" output="screen" >
 	  <param name="config_subdir" value='$(arg config_subdir)' />
   </node>
 </launch>

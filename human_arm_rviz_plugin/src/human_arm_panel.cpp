@@ -46,8 +46,12 @@ MotionDirectorPanel::MotionDirectorPanel(QWidget *parent)
 }
 
 void MotionDirectorPanel::fetch_configs() {
+  std::string config_subdir = "default";
+  
+  ros::param::get("~config_subdir", config_subdir);
+  ROS_INFO_STREAM("config_subdir param: " << config_subdir);
   std::string path =
-      ros::package::getPath("human_arm_motion_server") + "/config/recfiles";
+      ros::package::getPath("human_arm_motion_server") + "/config/" + config_subdir + "/recfiles";
 
   config_name_editor_->clear();
 

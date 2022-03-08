@@ -1,0 +1,6 @@
+string config_name
+---
+uint8 return_state
+uint8 SUCCESS=0
+uint8 NO_CONFIG_LOADED=1
+uint8 CONFIG_NOT_FOUND=2

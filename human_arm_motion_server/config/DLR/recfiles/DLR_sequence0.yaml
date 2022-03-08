@@ -1,0 +1,162 @@
+rec_steps:
+  - gesture:
+      description: index
+      gesture_name:
+        - index_flexion
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+
+  - gesture:
+      description: middle 
+      gesture_name:
+        - middle_flexion
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+
+  - gesture:
+      description: ring
+      gesture_name:
+        - ring_flexion
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+      
+  - gesture:
+      description: little
+      gesture_name:
+        - little_flexion
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+
+  - gesture:
+      description: thumb_a
+      gesture_name:
+        - thumb_flexion_a
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+
+  - gesture:
+      description: thumb_b
+      gesture_name:
+        - thumb_flexion_b
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+
+  - gesture:
+      description: index
+      gesture_name:
+        - index_flexion
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+
+  - gesture:
+      description: middle 
+      gesture_name:
+        - middle_flexion
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+
+  - gesture:
+      description: ring
+      gesture_name:
+        - ring_flexion
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+      
+  - gesture:
+      description: little
+      gesture_name:
+        - little_flexion
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+
+  - gesture:
+      description: thumb_a
+      gesture_name:
+        - thumb_flexion_a
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+
+  - gesture:
+      description: thumb_b
+      gesture_name:
+        - thumb_flexion_b
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+
+  - gesture:
+      description: index
+      gesture_name:
+        - index_flexion
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+
+  - gesture:
+      description: middle 
+      gesture_name:
+        - middle_flexion
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+
+  - gesture:
+      description: ring
+      gesture_name:
+        - ring_flexion
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+      
+  - gesture:
+      description: little
+      gesture_name:
+        - little_flexion
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+
+  - gesture:
+      description: thumb_a
+      gesture_name:
+        - thumb_flexion_a
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+
+  - gesture:
+      description: thumb_b
+      gesture_name:
+        - thumb_flexion_b
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0

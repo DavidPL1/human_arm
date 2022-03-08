@@ -1,0 +1,11 @@
+rec_steps:
+  - gesture:
+      description: Supinated Fist Palmar Extension
+      wait_seconds: 3
+      gesture_name:
+        - palmar_flexion
+      start_gesture_name:
+        - supination
+      repeats: 10
+      period_seconds: 4
+      familiarization_repeats: 2

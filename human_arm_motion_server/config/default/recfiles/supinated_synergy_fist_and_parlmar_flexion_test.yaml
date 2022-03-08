@@ -1,0 +1,36 @@
+rec_steps:
+  - gesture:
+      description: Pronated Palmar Flexion
+      wait_seconds: 3
+      gesture_name:
+        - palmar_flexion
+      start_gesture_name:
+        - neutral
+        - supination
+      repeats: 5 
+      period_seconds: 4
+      familiarization_repeats: 1
+  - gesture:
+      description: Pronated Synergy Fist
+      wait_seconds: 3
+      gesture_name:
+        - synergy_fist
+      start_gesture_name:
+        - neutral
+        - supination
+      repeats: 5
+      period_seconds: 4
+      familiarization_repeats: 1
+  - gesture:
+      description: Pronated Synergy Fist
+      wait_seconds: 3
+      gesture_name:
+        - palmar_flexion
+      gesture_weight:
+        - 0.7
+      start_gesture_name:
+        - synergy_fist
+        - supination
+      repeats: 5
+      period_seconds: 4
+      familiarization_repeats: 1

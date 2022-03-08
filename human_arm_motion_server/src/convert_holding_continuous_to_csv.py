@@ -83,7 +83,7 @@ class bagreader():
 
         print('topics: {0}, types: {1}, n_messages: {2}, frequencies: {3}'.format(self.topics, self.message_types, self.n_messages, self.frequency))
 
-        rec_flag_topic = [t for t in self.topics if 'rec_flag' in t][0]
+        rec_flag_topic = [t for t in self.topics if 'hold_flag' in t][0]
         tactile_topic = [t for t in self.topics if 'tactile_states' in t][0]
         gt_topic = [t for t in self.topics if 'joint_states' in t][0]
 
@@ -108,34 +108,20 @@ class bagreader():
         extracted_data = pd.DataFrame(columns=joint_names+board_cols+['timestamp'])
         extracted_gt = pd.DataFrame(columns=joint_names)
 
-        for t_start, t_stop in zip(rec_start, rec_stop):
-            for topic, msg, t in self.reader.read_messages(topics=tactile_topic, start_time=t_start, end_time=t_stop):
-                df_entry = {'timestamp': t}
-                for sensor in msg.sensors:
-                    sensor_dict = {'{0}_{1}'.format(sensor.name, j):val for j,val in enumerate(sensor.values)}
-                    df_entry.update(sensor_dict)
-                extracted_data = extracted_data.append(pd.Series(df_entry), ignore_index=True)
-        
-            start_ahead_t = rospy.Time.from_sec(t_start.to_sec() - 0.1)
-            for topic, msg, t in self.reader.read_messages(topics=gt_topic, start_time=start_ahead_t, end_time=t_stop):
-                df_entry = {name:val for name,val in zip(msg.name, msg.position)}
-                df_entry['timestamp'] = t
-                extracted_gt = extracted_gt.append(pd.Series(df_entry), ignore_index=True)
+        for topic, msg, t in self.reader.read_messages(topics=tactile_topic, start_time=rec_start[0], end_time=None):
+            df_entry = {'timestamp': t}
+            for sensor in msg.sensors:
+                sensor_dict = {'{0}_{1}'.format(sensor.name, j):val for j,val in enumerate(sensor.values)}
+                df_entry.update(sensor_dict)
+            extracted_data = extracted_data.append(pd.Series(df_entry), ignore_index=True)
+    
+        for topic, msg, t in self.reader.read_messages(topics=gt_topic, start_time=rec_start[0], end_time=None):
+            df_entry = {name:val for name,val in zip(msg.name, msg.position)}
+            df_entry['timestamp'] = t
+            extracted_gt = extracted_gt.append(pd.Series(df_entry), ignore_index=True)
 
-        print('Len of extracted gt: {0}'.format(len(extracted_gt)))
         extracted_data = extracted_data.set_index('timestamp')
         extracted_gt = extracted_gt.set_index('timestamp')
-
-        # sanity check if extracted_gt contains duplicate timestamp entries (with the same content)
-        if extracted_gt.index.duplicated().any():
-            d_idxs = np.where(extracted_gt.index.duplicated())
-            for d_idx in d_idxs:
-                d_idx = extracted_gt.index[d_idx]
-                duplicates = extracted_gt.loc[d_idx].dropna(1).to_numpy() # drop nan cols, as NaN == NaN is always false!
-                assert (duplicates[0] == duplicates).all(), 'Duplicate timestamps have different content! (see extracted_gt at index {0})'.format(d_idx)
-            print('Found {0} duplicate timestamps in gt, but data seems to be valid. Removing duplicates...'.format(len(d_idxs)))
-            extracted_gt = extracted_gt[~extracted_gt.index.duplicated()]
-            del d_idx, duplicates
 
         # Now we have to interpolate the gt data to fit the bracelet values
         # this is a bit tricky, because timestamps might not overlap.
@@ -147,7 +133,7 @@ class bagreader():
 
         extracted_data[joint_names] = extracted_gt[joint_names]
         del extracted_gt
-        extracted_data.to_csv(os.path.join(self.datafolder, 'data.csv'), index=True, header=True)
+        extracted_data.to_csv(os.path.join(self.datafolder, 'whole_data.csv'), index=True, header=True)
 
 
 if __name__ == '__main__':

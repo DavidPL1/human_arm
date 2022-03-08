@@ -17,7 +17,14 @@ roslaunch human_arm_description arm_display.launch
 optional arguments:
 - use_synergy: true | false (enable/disable single joint for finger grasp motion; defaults to true)
 - scale: float (scale the model to an arbitrary size; defaults to 1.0)
-- side: right | left (construct a left or right arm model) 
+- side: right | left (construct a left or right arm model)
+
+The `motion_server` node can be used to save gestures with a service call or
+used to replay gestures by linear interpolation either from the current pose or
+an optionally provided starting gesture.
+
+The `motion_director` node reads a config with a series of motions which get
+dispatched to the `motion_server`.
 
 author:
 - David Leins dleins@techak.de

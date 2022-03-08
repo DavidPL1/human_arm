@@ -16,11 +16,14 @@
 	<param name="robot_description" if="$(arg __noetic)" command="xacro $(find human_arm_description)/robots/human_arm.urdf.xacro use_synergy:=$(arg use_synergy) prefix:=$(arg prefix) scale:=$(arg scale) side:=$(arg side)" />
 	<param name="robot_description" unless="$(arg __noetic)" command="xacro --xacro-ns $(find human_arm_description)/robots/human_arm.urdf.xacro use_synergy:=$(arg use_synergy) prefix:=$(arg prefix) scale:=$(arg scale) side:=$(arg side)" />
 
+	<param name="robot_description_semantic" if="$(arg __noetic)" command="xacro $(find moveit_generated)/config/human_arm.srdf.xacro" />
+	<param name="robot_description_semantic" unless="$(arg __noetic)" command="xacro --xacro-ns $(find moveit_generated)/config/human_arm.srdf.xacro" />
+
 	<group if="$(arg jsp)">
 		<arg name="__jsp" value="joint_state_publisher" unless="$(arg gui)"/>
 		<arg name="__jsp" value="joint_state_publisher_gui" if="$(arg gui)"/>
 		<node name="$(anon arm_jsp_gui)" pkg="$(arg __jsp)" type="$(arg __jsp)">
-			<rosparam if="$(arg use_synergy)" param="source_list">["input/joint_states"]</rosparam>
+			<rosparam if="$(arg use_synergy)" param="source_list">["synergy/joint_states"]</rosparam>
 			<rosparam param="source_list" unless="$(arg use_synergy)">["input/joint_states"]</rosparam>
 		</node>
 	</group>

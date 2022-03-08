@@ -5,9 +5,10 @@
   <arg name="target_prefix" default="goal" />
   <arg name="start_prefix" default="start" />
   <arg name="shadow_preview" default="True" />
+  <arg name="config_subdir" default="default" />
 
   <!-- Load gestures into parameter server -->
-  <rosparam command="load" file="$(find human_arm_motion_server)/config/hand_arm_gestures.yaml" />
+  <rosparam command="load" file="$(find human_arm_motion_server)/config/$(arg config_subdir)/hand_arm_gestures.yaml" />
 
   <node name="motion_server" pkg="human_arm_motion_server" type="motion_server.py" output="screen">
     <param name="sample_frequency" value="$(arg sample_frequency)" />

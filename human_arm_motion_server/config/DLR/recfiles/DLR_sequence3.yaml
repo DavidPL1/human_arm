@@ -1,0 +1,216 @@
+rec_steps:
+  - gesture:
+      description: fist 
+      gesture_name:
+        - fist_index
+        - fist_middle
+        - fist_ring
+        - fist_little
+        - fist_thumb
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+
+  - gesture:
+      description: pointing
+      gesture_name:
+        - fist_middle
+        - fist_ring
+        - fist_little
+        - fist_thumb
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+
+  - gesture:
+      description: ring_little
+      gesture_name:
+        - fist_index
+        - fist_middle
+        - fist_thumb
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+
+  - gesture:
+      description: palmar_flexion
+      gesture_name:
+        - palmar_flexion
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+
+  - gesture:
+      description: dorsal_extension
+      gesture_name:
+        - dorsal_extension
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+
+  - gesture:
+      description: pronation
+      gesture_name:
+        - pronation
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+
+  - gesture:
+      description: supination
+      gesture_name:
+        - supination
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+
+  - gesture:
+      description: fist 
+      gesture_name:
+        - fist_index
+        - fist_middle
+        - fist_ring
+        - fist_little
+        - fist_thumb
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+
+  - gesture:
+      description: pointing
+      gesture_name:
+        - fist_middle
+        - fist_ring
+        - fist_little
+        - fist_thumb
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+
+  - gesture:
+      description: ring_little
+      gesture_name:
+        - fist_index
+        - fist_middle
+        - fist_thumb
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+
+  - gesture:
+      description: palmar_flexion
+      gesture_name:
+        - palmar_flexion
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+
+  - gesture:
+      description: dorsal_extension
+      gesture_name:
+        - dorsal_extension
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+
+  - gesture:
+      description: pronation
+      gesture_name:
+        - pronation
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+
+  - gesture:
+      description: supination
+      gesture_name:
+        - supination
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+
+  - gesture:
+      description: fist 
+      gesture_name:
+        - fist_index
+        - fist_middle
+        - fist_ring
+        - fist_little
+        - fist_thumb
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+
+  - gesture:
+      description: pointing
+      gesture_name:
+        - fist_middle
+        - fist_ring
+        - fist_little
+        - fist_thumb
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+
+  - gesture:
+      description: ring_little
+      gesture_name:
+        - fist_index
+        - fist_middle
+        - fist_thumb
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+
+  - gesture:
+      description: palmar_flexion
+      gesture_name:
+        - palmar_flexion
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+
+  - gesture:
+      description: dorsal_extension
+      gesture_name:
+        - dorsal_extension
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+
+  - gesture:
+      description: pronation
+      gesture_name:
+        - pronation
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0
+
+  - gesture:
+      description: supination
+      gesture_name:
+        - supination
+      repeats: 1 
+      hold_secs: 5
+      period_seconds: 2
+      familiarization_repeats: 0

@@ -20,6 +20,7 @@ class MotionDirector():
         rospy.init_node('human_arm_motion_director')
         self.text_frame_id = rospy.get_param('~context_info_frame_id', 'forearm_base')
         self.rec_steps = rospy.get_param('~rec_steps', None)
+        self.config_subdir = rospy.get_param('~config_subdir', "default")
         self.pub_marker = rospy.Publisher('visualization_marker', Marker, queue_size=1)
         self.pub_rec_flag = rospy.Publisher('rec_flag', UInt8, queue_size=1)
         self.current_timer = None
@@ -87,8 +88,8 @@ class MotionDirector():
             rospack = rospkg.RosPack()
 
             pkgpath = rospack.get_path('human_arm_motion_server')
-            if req.data + '.yaml' not in os.listdir(os.path.join(pkgpath, 'config', 'recfiles')):
-                rospy.logerr("Rec config file '%s.yaml' not found in config path (%s)" % (req.data, os.path.join(pkgpath, 'config', 'recfiles')))
+            if req.data + '.yaml' not in os.listdir(os.path.join(pkgpath, 'config', self.config_subdir, 'recfiles')):
+                rospy.logerr("Rec config file '%s.yaml' not found in config path (%s)" % (req.data, os.path.join(pkgpath, 'config', self.config_subdir, 'recfiles')))
                 return
 
             # Override current config, if it exists
@@ -97,7 +98,7 @@ class MotionDirector():
             except KeyError:
                 pass
 
-            rec_file_path = os.path.join(pkgpath, 'config', 'recfiles', req.data + ".yaml")
+            rec_file_path = os.path.join(pkgpath, 'config', self.config_subdir, 'recfiles', req.data + ".yaml")
             with open(rec_file_path, 'r') as f:
                 self.rec_steps = yaml.load(f).get('rec_steps')
             rospy.set_param('~rec_steps', self.rec_steps)
@@ -118,10 +119,22 @@ class MotionDirector():
             fam_reps = int(step['familiarization_repeats'])
             repeats = int(step['repeats']) + fam_reps
             rep_period = float(step['period_seconds'])
+            hold_secs = float(step.get('hold_secs', 0.0))
 
-            rospy.logdebug("fam_reps: %s, reps: %s, rep_period: %s, gesture: %s" % (fam_reps, repeats, rep_period, step['gesture_name']))
+            if hold_secs > 0.0 and repeats > 1:
+                rospy.logwarn('hold_secs and repeats parameters should not be simultaneously active! Ignoring repeats')
 
-            self.current_timer = repeats * rep_period - fam_reps * rep_period
+
+            if hold_secs > 0.0:
+                fam_reps = 0
+                repeats = 1
+                self.current_timer = 2 * rep_period + hold_secs
+            else:
+                self.current_timer = repeats * rep_period - fam_reps * rep_period
+                hold_secs = 0.0
+
+            rospy.logdebug(f"fam_reps: {fam_reps}, reps: {repeats}, rep_period: {rep_period}, hold_secs: {hold_secs}, gesture: {step['gesture_name']}")
+
 
             if 'wait_seconds' in step.keys():
                 secs = int(step.get('wait_seconds'))
@@ -137,6 +150,7 @@ class MotionDirector():
 
             motion_goal = PlayGestureGoal(
                 repeats=repeats,
+                hold_secs=hold_secs,
                 period_seconds=rep_period,
                 gesture_name=step['gesture_name'],
                 gesture_weight=step.get('gesture_weight', np.repeat(1.0, gestures_len)),
