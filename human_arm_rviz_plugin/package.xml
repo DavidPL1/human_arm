@@ -4,10 +4,14 @@
   <description>
      Rviz plugin to start the motion director and load configs
   </description>
-  <maintainer email="dleins@techfak.de">David Leins</maintainer>
-  <license>NO REDISTRIBUTION ACCEPTED</license>
 
-  <author>David Leins</author>
+  <maintainer email="dleins@techfak.uni-bielefeld.de">David P. Leins</maintainer>
+  <license>BSD</license>
+
+  <author>David P. Leins</author>
+
+  <url type="repository">https://github.com/DavidPL1/human_arm</url>
+  <url type="bugtracker">https://github.com/DavidPL1/human_arm/issues</url>
 
   <buildtool_depend>catkin</buildtool_depend>
 

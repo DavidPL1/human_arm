@@ -4,8 +4,15 @@
   <version>0.0.1</version>
   <description>Human arm model as URDF</description>
 
-  <maintainer email="dleins@techfak.uni-bielefeld.de">David Leins</maintainer>
+  <maintainer email="dleins@techfak.uni-bielefeld.de">David P. Leins</maintainer>
   <license>NO REDISTRIBUTION ACCEPTED</license>
+
+  <author>David P. Leins</author>
+  <author>Guillaume Walck</author>
+  <author>Carlos Rosales</author>
+
+  <url type="repository">https://github.com/DavidPL1/human_arm</url>
+  <url type="bugtracker">https://github.com/DavidPL1/human_arm/issues</url>
   
   <buildtool_depend>catkin</buildtool_depend>
   <exec_depend>joint_state_publisher</exec_depend>

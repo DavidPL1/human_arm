@@ -4,8 +4,13 @@
   <version>0.0.2</version>
   <description>Messages for the human arm pose server</description>
 
-  <maintainer email="dleins@techfak.de">David Leins</maintainer>
+  <maintainer email="dleins@techfak.uni-bielefeld.de">David P. Leins</maintainer>
   <license>NO REDISTRIBUTION ACCEPTED</license>
+
+  <author>David P. Leins</author>
+
+  <url type="repository">https://github.com/DavidPL1/human_arm</url>
+  <url type="bugtracker">https://github.com/DavidPL1/human_arm/issues</url>
 
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>message_generation</build_depend>

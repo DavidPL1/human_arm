@@ -4,8 +4,13 @@
   <version>0.0.1</version>
   <description>Pose server move the human arn model into predefined positions</description>
 
-  <maintainer email="dleins@techfak.uni-bielefeld.de">David Leins</maintainer>
-  <license>NO REDISTRIBUTION ACCEPTED</license>
+  <maintainer email="dleins@techfak.uni-bielefeld.de">David P. Leins</maintainer>
+  <license>BSD</license>
+
+  <author>David P. Leins</author>
+
+  <url type="repository">https://github.com/DavidPL1/human_arm</url>
+  <url type="bugtracker">https://github.com/DavidPL1/human_arm/issues</url>
 
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>human_arm_motion_msgs</build_depend>
