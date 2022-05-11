@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>human_arm</name>
+  <version>0.0.1</version>
+  <description>Metapackage to build human_arm related packages</description>
+
+  <maintainer email="dleins@techfak.uni-bielefeld.de">David P. Leins</maintainer>
+  <license>NO REDISTRIBUTION ACCEPTED,BSD</license>
+
+  <author>David P. Leins</author>
+
+  <url type="repository">https://github.com/DavidPL1/human_arm</url>
+  <url type="bugtracker">https://github.com/DavidPL1/human_arm/issues</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <exec_depend>human_arm_motion_msgs</exec_depend>
+  <exec_depend>human_arm_description</exec_depend>
+  <exec_depend>human_arm_motion_server</exec_depend>
+  <exec_depend>human_arm_rviz_plugin</exec_depend>
+
+  <export>
+      <metapackage/>
+  </export>
+</package>
