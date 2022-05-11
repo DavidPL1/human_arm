@@ -12,7 +12,7 @@
 	<arg name="side" default="right"/>
 
 	<!-- load robot description -->
-	<arg name="__noetic" value="$(eval env('ROS_PYTHON_VERSION') == '3')" />
+	<arg name="__noetic" value="$(eval env('ROS_PYTHON_VERSION').startswith('3'))" />
 	<param name="robot_description" if="$(arg __noetic)" command="xacro $(find human_arm_description)/robots/human_arm.urdf.xacro use_synergy:=$(arg use_synergy) prefix:=$(arg prefix) scale:=$(arg scale) side:=$(arg side)" />
 	<param name="robot_description" unless="$(arg __noetic)" command="xacro --xacro-ns $(find human_arm_description)/robots/human_arm.urdf.xacro use_synergy:=$(arg use_synergy) prefix:=$(arg prefix) scale:=$(arg scale) side:=$(arg side)" />
 
