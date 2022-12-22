@@ -65,18 +65,23 @@ link_lengths:
   thumb:
     middle: 0.03803
     proximal: 0.05415
+    distal: 0.03
   index:
     middle: 0.027
     proximal: 0.046
+    distal: 0.03
   middle:
     middle: 0.033
     proximal: 0.0495
+    distal: 0.03
   ring:
     middle: 0.033
     proximal: 0.048
+    distal: 0.03
   little:
     middle: 0.0215
     proximal: 0.037
+    distal: 0.03
 
 synergies:
   default: &SYNERGY_DEFAULT

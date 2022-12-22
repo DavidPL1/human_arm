@@ -1,0 +1,52 @@
+controller_list:
+  - name: fake_thumb_controller
+    type: $(arg fake_execution_type)
+    joints:
+      - radiocarpal_flexor_joint
+      - thumb_abduction_joint
+      - thumb_proximal_joint
+      - thumb_middle_joint
+      - thumb_distal_joint
+  - name: fake_index_controller
+    type: $(arg fake_execution_type)
+    joints:
+      - radiocarpal_flexor_joint
+      - index_abduction_joint
+      - index_proximal_joint
+      - index_middle_joint
+      - index_distal_joint
+  - name: fake_middle_controller
+    type: $(arg fake_execution_type)
+    joints:
+      - radiocarpal_flexor_joint
+      - middle_abduction_joint
+      - middle_proximal_joint
+      - middle_middle_joint
+      - middle_distal_joint
+  - name: fake_ring_controller
+    type: $(arg fake_execution_type)
+    joints:
+      - radiocarpal_flexor_joint
+      - ring_abduction_joint
+      - ring_proximal_joint
+      - ring_middle_joint
+      - ring_distal_joint
+  - name: fake_pinky_controller
+    type: $(arg fake_execution_type)
+    joints:
+      - radiocarpal_flexor_joint
+      - little_abduction_joint
+      - little_proximal_joint
+      - little_middle_joint
+      - little_distal_joint
+initial:  # Define initial robot poses per group
+  - group: thumb
+    pose: neutral
+  - group: index
+    pose: neutral
+  - group: middle
+    pose: neutral
+  - group: ring
+    pose: neutral
+  - group: pinky
+    pose: neutral

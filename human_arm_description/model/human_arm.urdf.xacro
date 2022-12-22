@@ -52,12 +52,26 @@
 		</link>
 	</xacro:macro>
 
+	<!-- end effector -->
+	<xacro:macro name="endeffector"
+	             params="link_prefix:=^|'' joint_prefix:=^|''
+	                     finger:=^ joint link parent reflect:=^ *origin">
+
+		<joint name="${joint_prefix}${finger}_${joint}_joint" type="fixed">
+			<xacro:insert_block name="origin"/>
+			<parent link="${link_prefix}${parent}"/>
+			<child link="${link_prefix}${finger}_${link}_link"/>
+		</joint>
+		<link name="${link_prefix}${finger}_${link}_link"/>
+	</xacro:macro>
+
 	<!-- FINGER MODEL -->
 	<xacro:macro name="finger"
 	             params="parent link_prefix:=^|'' joint_prefix:=^|''
 	                     finger reflect:=^ *origin joint_props:=${properties['joints']}">
 		<xacro:property name="proximal_len" value="${properties['link_lengths'][finger]['proximal']}"/>
 		<xacro:property name="middle_len" value="${properties['link_lengths'][finger]['middle']}"/>
+		<xacro:property name="distal_len" value="${properties['link_lengths'][finger]['distal']}"/>
 
 		<!-- KNUCKLE -->
 
@@ -86,6 +100,12 @@
 			<origin xyz="0 0 ${middle_len*scale_factor}" rpy="0 0 0"/>
 			<axis xyz="1 0 0" />
 		</xacro:segment>
+
+		<!-- TIP-->
+
+		<xacro:endeffector joint="ee" link="ee" parent="${finger}_distal_link">
+			<origin xyz="0 0 ${distal_len*scale_factor}" rpy="0 0 0"/>
+		</xacro:endeffector>
 	</xacro:macro>
 
 	<!-- THUMB MODEL -->
@@ -94,6 +114,7 @@
 	                     finger:='thumb' reflect:=^ *origin joint_props:=${properties['joints']}">
 		<xacro:property name="proximal_len" value="${properties['link_lengths'][finger]['proximal']}"/>
 		<xacro:property name="middle_len" value="${properties['link_lengths'][finger]['middle']}"/>
+		<xacro:property name="distal_len" value="${properties['link_lengths'][finger]['distal']}"/>
 
 		<!-- KNUCKLE -->
 
@@ -123,6 +144,12 @@
 			<origin xyz="0 0 ${middle_len*scale_factor}" rpy="0 0 0"/>
 			<axis xyz="0 ${-1*reflect} 0" />
 		</xacro:segment>
+
+		<!-- TIP-->
+
+		<xacro:endeffector joint="ee" link="ee" parent="${finger}_distal_link">
+			<origin xyz="0 0 ${distal_len*scale_factor}" rpy="0 0 0"/>
+		</xacro:endeffector>
 	</xacro:macro>
 
 
