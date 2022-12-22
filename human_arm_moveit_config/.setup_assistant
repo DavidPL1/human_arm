@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: human_arm_description
+    relative_path: robots/human_arm.urdf.xacro
+    xacro_args: ""
+  SRDF:
+    relative_path: config/human_arm.srdf
+  CONFIG:
+    author_name: Thorben Markmann
+    author_email: tmarkmann@techfak.uni-bielefeld.de
+    generated_timestamp: 1671428352

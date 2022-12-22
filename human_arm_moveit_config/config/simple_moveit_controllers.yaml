@@ -1,0 +1,26 @@
+controller_list:
+  - name: position_controller
+    action_ns: follow_joint_trajectory
+    type: FollowJointTrajectory
+    default: True
+    joints:
+      - thumb_abduction_joint
+      - thumb_proximal_joint
+      - thumb_middle_joint
+      - thumb_distal_joint
+      - index_abduction_joint
+      - index_proximal_joint
+      - index_middle_joint
+      - index_distal_joint
+      - middle_abduction_joint
+      - middle_proximal_joint
+      - middle_middle_joint
+      - middle_distal_joint
+      - ring_abduction_joint
+      - ring_proximal_joint
+      - ring_middle_joint
+      - ring_distal_joint
+      - little_abduction_joint
+      - little_proximal_joint
+      - little_middle_joint
+      - little_distal_joint
