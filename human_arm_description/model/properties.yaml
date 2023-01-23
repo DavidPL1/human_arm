@@ -82,6 +82,7 @@ link_lengths:
     middle: 0.0215
     proximal: 0.037
     distal: 0.03
+  dexmo_ref: 0.06
 
 synergies:
   default: &SYNERGY_DEFAULT
