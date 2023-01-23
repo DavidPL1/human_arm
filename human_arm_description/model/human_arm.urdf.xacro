@@ -272,6 +272,14 @@
 			<origin xyz="${-0.04175*reflect*scale_factor} ${-0.003*scale_factor} ${0.079*scale_factor}" rpy="0 0 0"/>
 		</xacro:finger>
 
+		<!-- Dexmo Ref -->
+		<link name="dexmo_ref"/>
+		<joint name="${joint_prefix}dexmo_ref_static" type="fixed">
+			<parent link="middle_knuckle_link" />
+			<child link="dexmo_ref"/>
+			<origin xyz="0 0.03 -${properties['link_lengths']['dexmo_ref']}" rpy="0 0 0"/>
+		</joint>
+
 	</xacro:macro>
 
 </robot>
