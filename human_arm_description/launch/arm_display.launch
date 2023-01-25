@@ -6,12 +6,15 @@
   <arg name="use_synergy" default="false" />
   <arg name="use_shadow_arms" default="true" />
   <arg name="config_subdir" default="default" />
+	<arg name="link_length_override" default="" doc="Provide a yaml file which overrides ALL link length values" />
+
   <group ns="arm">
     <include file="$(find human_arm_description)/launch/upload.launch">
 
       <arg name="scale" value="$(arg scale)" />
       <arg name="use_synergy" value="$(arg use_synergy)" />
       <arg name="side" value="$(arg side)" />
+      <arg name="link_length_override" value="$(arg link_length_override)" />
     </include>
     <node name="$(anon forearm_base_transform)" pkg="tf2_ros"
     type="static_transform_publisher"
@@ -25,6 +28,7 @@
         <arg name="side" value="$(arg side)" />
         <arg name="prefix" value="goal_" />
         <arg name="gui" value="false" />
+        <arg name="link_length_override" value="$(arg link_length_override)" />
       </include>
       <node name="$(anon goal_forearm_base_transform)"
       pkg="tf2_ros" type="static_transform_publisher"
@@ -38,6 +42,7 @@
         <arg name="side" value="$(arg side)" />
         <arg name="prefix" value="start_" />
         <arg name="gui" value="false" />
+        <arg name="link_length_override" value="$(arg link_length_override)" />
       </include>
       <node name="$(anon goal_forearm_base_transform)"
       pkg="tf2_ros" type="static_transform_publisher"

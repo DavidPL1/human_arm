@@ -10,11 +10,12 @@
 	<arg name="prefix" default=""/>
 	<arg name="scale" default="1.0"/>
 	<arg name="side" default="right"/>
+	<arg name="link_length_override" default="" doc="Provide a yaml file which overrides ALL link length values" />
 
 	<!-- load robot description -->
 	<arg name="__noetic" value="$(eval env('ROS_PYTHON_VERSION').startswith('3'))" />
-	<param name="robot_description" if="$(arg __noetic)" command="xacro $(find human_arm_description)/robots/human_arm.urdf.xacro use_synergy:=$(arg use_synergy) prefix:=$(arg prefix) scale:=$(arg scale) side:=$(arg side)" />
-	<param name="robot_description" unless="$(arg __noetic)" command="xacro --xacro-ns $(find human_arm_description)/robots/human_arm.urdf.xacro use_synergy:=$(arg use_synergy) prefix:=$(arg prefix) scale:=$(arg scale) side:=$(arg side)" />
+	<param name="robot_description" if="$(arg __noetic)" command="xacro $(find human_arm_description)/robots/human_arm.urdf.xacro use_synergy:=$(arg use_synergy) prefix:=$(arg prefix) scale:=$(arg scale) side:=$(arg side) link_length_override:=$(arg link_length_override)" />
+	<param name="robot_description" unless="$(arg __noetic)" command="xacro --xacro-ns $(find human_arm_description)/robots/human_arm.urdf.xacro use_synergy:=$(arg use_synergy) prefix:=$(arg prefix) scale:=$(arg scale) side:=$(arg side) link_length_override:=$(arg link_length_override)" />
 
 	<param name="robot_description_semantic" if="$(arg __noetic)" command="xacro $(find moveit_generated)/config/human_arm.srdf.xacro" />
 	<param name="robot_description_semantic" unless="$(arg __noetic)" command="xacro --xacro-ns $(find moveit_generated)/config/human_arm.srdf.xacro" />

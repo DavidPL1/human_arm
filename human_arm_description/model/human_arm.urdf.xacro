@@ -69,9 +69,9 @@
 	<xacro:macro name="finger"
 	             params="parent link_prefix:=^|'' joint_prefix:=^|''
 	                     finger reflect:=^ *origin joint_props:=${properties['joints']}">
-		<xacro:property name="proximal_len" value="${properties['link_lengths'][finger]['proximal']}"/>
-		<xacro:property name="middle_len" value="${properties['link_lengths'][finger]['middle']}"/>
-		<xacro:property name="distal_len" value="${properties['link_lengths'][finger]['distal']}"/>
+		<xacro:property name="proximal_len" value="${link_lengths[finger]['proximal']}"/>
+		<xacro:property name="middle_len" value="${link_lengths[finger]['middle']}"/>
+		<xacro:property name="distal_len" value="${link_lengths[finger]['distal']}"/>
 
 		<!-- KNUCKLE -->
 
@@ -112,9 +112,9 @@
 	<xacro:macro name="thumb"
 	             params="parent link_prefix:=^|'' joint_prefix:=^|''
 	                     finger:='thumb' reflect:=^ *origin joint_props:=${properties['joints']}">
-		<xacro:property name="proximal_len" value="${properties['link_lengths'][finger]['proximal']}"/>
-		<xacro:property name="middle_len" value="${properties['link_lengths'][finger]['middle']}"/>
-		<xacro:property name="distal_len" value="${properties['link_lengths'][finger]['distal']}"/>
+		<xacro:property name="proximal_len" value="${link_lengths[finger]['proximal']}"/>
+		<xacro:property name="middle_len" value="${link_lengths[finger]['middle']}"/>
+		<xacro:property name="distal_len" value="${link_lengths[finger]['distal']}"/>
 
 		<!-- KNUCKLE -->
 
@@ -156,10 +156,16 @@
 	<!-- HUMAN HAND MODEL -->
 	<xacro:macro name="human_arm"
 	             params="parent link_prefix:=^|'' joint_prefix:=^|'' scale:=1.0
-	                     use_synergy side:='' *origin">
+	                     use_synergy side:='' link_length_override=^|'' *origin">
 		<!-- load kinematics properties -->
 		<xacro:property name="package" value="$(find human_arm_description)"/>
-		<xacro:property name="properties" value="${load_yaml(package + '/model/properties.yaml')}"/>
+		<xacro:property name="properties" value="${xacro.load_yaml(package + '/model/properties.yaml')}"/>
+		<xacro:if value="${ link_length_override == '' }" >
+			<xacro:property name="link_lengths" value="${properties['link_lengths']}"/>
+		</xacro:if>
+		<xacro:unless value="${ link_length_override == '' }" >
+			<xacro:property name="link_lengths" value="${xacro.load_yaml(link_length_override)}"/>
+		</xacro:unless>
 		<xacro:property name="synergies" value="${properties['synergies']}"/>
 		<xacro:property name="scale_factor" value="${scale}"/>
 
@@ -189,8 +195,8 @@
 
 		<!-- WRIST (Supination/Pronation) -->
 		<joint name="${joint_prefix}distal_radioulnar_joint" type="revolute" >
-			<xacro:property name="forearm_y" value="${properties['link_lengths']['forearm']['y']}"/>
-			<xacro:property name="forearm_z" value="${properties['link_lengths']['forearm']['z']}"/>
+			<xacro:property name="forearm_y" value="${link_lengths['forearm']['y']}"/>
+			<xacro:property name="forearm_z" value="${link_lengths['forearm']['z']}"/>
 			<origin xyz="0 ${scale_factor*forearm_y} ${scale_factor*forearm_z}" rpy="0 0 0" />
 			<axis xyz="0 0 ${-1*reflect}" />
 			<limit lower="${properties['joints']['distal_radioulnar']['bounds'][0]*pi/180}" upper="${properties['joints']['distal_radioulnar']['bounds'][1]*pi/180}"
@@ -253,23 +259,23 @@
 		<!-- THUMB AND FINGERS -->
 
 		<xacro:thumb parent="palm_link" finger="thumb">
-			<origin xyz="${0.02475*reflect*scale_factor} ${-0.0125*scale_factor} ${0.0125*scale_factor}" rpy="0.0 ${0.6240*reflect} 0"/>
+			<origin xyz="${link_lengths['palm_link_distances']['thumb']['x']*reflect*scale_factor} ${link_lengths['palm_link_distances']['thumb']['y']*scale_factor} ${link_lengths['palm_link_distances']['thumb']['z']*scale_factor}" rpy="0.0 ${0.6240*reflect} 0"/>
 		</xacro:thumb>
 
 		<xacro:finger parent="palm_link" finger="index">
-			<origin xyz="${0.02175*reflect*scale_factor} ${-0.002*scale_factor} ${0.099*scale_factor}" rpy="0 0 0"/>
+			<origin xyz="${link_lengths['palm_link_distances']['index']['x']*reflect*scale_factor} ${link_lengths['palm_link_distances']['index']['y']*scale_factor} ${link_lengths['palm_link_distances']['index']['z']*scale_factor}" rpy="0 0 0"/>
 		</xacro:finger>
 
 		<xacro:finger parent="palm_link" finger="middle">
-			<origin xyz="${-0.002*reflect*scale_factor} ${0.0015*scale_factor} ${0.0955*scale_factor}" rpy="0 0 0"/>
+			<origin xyz="${link_lengths['palm_link_distances']['middle']['x']*reflect*scale_factor} ${link_lengths['palm_link_distances']['middle']['y']*scale_factor} ${link_lengths['palm_link_distances']['middle']['z']*scale_factor}" rpy="0 0 0"/>
 		</xacro:finger>
 
 		<xacro:finger parent="palm_link" finger="ring">
-			<origin xyz="${-0.02225*reflect*scale_factor} ${0.0010*scale_factor} ${0.090*scale_factor}" rpy="0 0 0"/>
+			<origin xyz="${link_lengths['palm_link_distances']['ring']['x']*reflect*scale_factor} ${link_lengths['palm_link_distances']['ring']['y']*scale_factor} ${link_lengths['palm_link_distances']['ring']['z']*scale_factor}" rpy="0 0 0"/>
 		</xacro:finger>
 
 		<xacro:finger parent="palm_link" finger="little">
-			<origin xyz="${-0.04175*reflect*scale_factor} ${-0.003*scale_factor} ${0.079*scale_factor}" rpy="0 0 0"/>
+			<origin xyz="${link_lengths['palm_link_distances']['little']['x']*reflect*scale_factor} ${link_lengths['palm_link_distances']['little']['y']*scale_factor} ${link_lengths['palm_link_distances']['little']['z']*scale_factor}" rpy="0 0 0"/>
 		</xacro:finger>
 
 		<!-- Dexmo Ref -->
@@ -277,7 +283,7 @@
 		<joint name="${joint_prefix}dexmo_ref_static" type="fixed">
 			<parent link="middle_knuckle_link" />
 			<child link="dexmo_ref"/>
-			<origin xyz="0 0.03 -${properties['link_lengths']['dexmo_ref']}" rpy="0 0 0"/>
+			<origin xyz="0 0.03 -${link_lengths['dexmo_ref']}" rpy="0 0 0"/>
 		</joint>
 
 	</xacro:macro>
