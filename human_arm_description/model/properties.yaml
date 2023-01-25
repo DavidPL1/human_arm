@@ -82,6 +82,27 @@ link_lengths:
     middle: 0.0215
     proximal: 0.037
     distal: 0.03
+  palm_link_distances:
+    thumb:
+      x: 0.02475
+      y: -0.0125
+      z: 0.0125
+    index:
+      x: 0.02175
+      y: -0.002
+      z: 0.099
+    middle:
+      x: -0.002
+      y: 0.0015
+      z: 0.0955
+    ring:
+      x: -0.02225
+      y: 0.0010
+      z: 0.090
+    little:
+      x: -0.04175
+      y: -0.003
+      z: 0.079
   dexmo_ref: 0.06
 
 synergies:
