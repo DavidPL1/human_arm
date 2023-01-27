@@ -119,6 +119,9 @@ link_lengths:
       <<: *SCALES_DEFAULT
     little:
       <<: *SCALES_DEFAULT
+    palm:
+      x: 1.
+      z: 1.
 
 synergies:
   default: &SYNERGY_DEFAULT
