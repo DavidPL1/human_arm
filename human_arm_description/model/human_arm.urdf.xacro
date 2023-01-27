@@ -44,7 +44,7 @@
 							<xacro:property name="mesh" value="${finger}_${link}"/>
 						</xacro:if>
 						<mesh filename="package://human_arm_description/model/meshes/${mesh}.stl"
-						      scale="${scale_factor*0.001*reflect} ${scale_factor*0.001} ${scale_factor*0.001}"/>
+						      scale="${link_lengths['scales'][finger][link]*scale_factor*0.001*reflect} ${link_lengths['scales'][finger][link]*scale_factor*0.001} ${link_lengths['scales'][finger][link]*scale_factor*0.001}"/>
 					</geometry>
 					<material name="HumanHand/Skin" />
 				</visual>
