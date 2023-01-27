@@ -104,6 +104,21 @@ link_lengths:
       y: -0.003
       z: 0.079
   dexmo_ref: 0.06
+  scales:
+    default: &SCALES_DEFAULT
+      proximal: 1.
+      middle: 1.
+      distal: 1.
+    thumb:
+      <<: *SCALES_DEFAULT
+    index:
+      <<: *SCALES_DEFAULT
+    middle:
+      <<: *SCALES_DEFAULT
+    ring:
+      <<: *SCALES_DEFAULT
+    little:
+      <<: *SCALES_DEFAULT
 
 synergies:
   default: &SYNERGY_DEFAULT
