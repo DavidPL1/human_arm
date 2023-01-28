@@ -65,23 +65,23 @@ link_lengths:
   thumb:
     middle: 0.03803
     proximal: 0.05415
-    distal: 0.03
+    distal: 0.032
   index:
     middle: 0.027
     proximal: 0.046
-    distal: 0.03
+    distal: 0.026
   middle:
     middle: 0.033
     proximal: 0.0495
-    distal: 0.03
+    distal: 0.0275
   ring:
     middle: 0.033
     proximal: 0.048
-    distal: 0.03
+    distal: 0.027
   little:
     middle: 0.0215
     proximal: 0.037
-    distal: 0.03
+    distal: 0.0245
   palm_link_distances:
     thumb:
       x: 0.02475

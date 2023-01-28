@@ -104,7 +104,7 @@
 		<!-- TIP-->
 
 		<xacro:endeffector joint="ee" link="ee" parent="${finger}_distal_link">
-			<origin xyz="0 0 ${distal_len*scale_factor}" rpy="0 0 0"/>
+			<origin xyz="0 0.0027 ${distal_len*scale_factor}" rpy="0 0 0"/>
 		</xacro:endeffector>
 	</xacro:macro>
 
@@ -148,7 +148,7 @@
 		<!-- TIP-->
 
 		<xacro:endeffector joint="ee" link="ee" parent="${finger}_distal_link">
-			<origin xyz="0 0 ${distal_len*scale_factor}" rpy="0 0 0"/>
+			<origin xyz="0.005 0 ${distal_len*scale_factor}" rpy="0 0 0"/>
 		</xacro:endeffector>
 	</xacro:macro>
 
