@@ -281,9 +281,9 @@
 		<!-- Dexmo Ref -->
 		<link name="dexmo_ref"/>
 		<joint name="${joint_prefix}dexmo_ref_static" type="fixed">
-			<parent link="middle_knuckle_link" />
+			<parent link="palm_link" />
 			<child link="dexmo_ref"/>
-			<origin xyz="0 0.012 -${link_lengths['dexmo_ref']}" rpy="0 0 0"/>
+			<origin xyz="${link_lengths['palm_link_distances']['middle']['x']} 0.0135 ${link_lengths['palm_link_distances']['middle']['z'] - link_lengths['dexmo_ref']}" rpy="0 0 0"/>
 		</joint>
 
 	</xacro:macro>
