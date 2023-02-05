@@ -26,8 +26,9 @@ an optionally provided starting gesture.
 The `motion_director` node reads a config with a series of motions which get
 dispatched to the `motion_server`.
 
-author:
+authors:
 - David Leins dleins@techak.uni-bielefeld.de
+- Thorben Markmann tmarkmann@techak.uni-bielefeld.de
 
 original authors (human_hand):
 - Guillaume Walck gwalck@techfak.uni-bielefeld.de
